@@ -163,9 +163,9 @@
       showNavigationControl: false,
       animationTime: 0.55,
       blendTime: 0.12,
-      maxZoomPixelRatio: 1,
-      minZoomImageRatio: 0.8,
-      visibilityRatio: 0.7,
+      maxZoomPixelRatio: 3,
+      minZoomImageRatio: 1,
+      visibilityRatio: 1,
       constrainDuringPan: true,
       gestureSettingsMouse: { clickToZoom: false, dblClickToZoom: true, scrollToZoom: true },
       gestureSettingsTouch: { pinchToZoom: true, flickEnabled: false, clickToZoom: false, dblClickToZoom: true },
@@ -248,19 +248,23 @@
     hideReadyTimer = setTimeout(() => readyMessage.classList.remove("visible"), 5000);
   }
 
+  function zoomBy(factor) {
+    viewer.viewport.zoomBy(factor).applyConstraints();
+  }
+
   unlockForm.addEventListener("submit", unlock);
   document.querySelector("#previous-button").addEventListener("click", () => showPhoto(currentIndex - 1));
   document.querySelector("#next-button").addEventListener("click", () => showPhoto(currentIndex + 1));
-  document.querySelector("#zoom-in-button").addEventListener("click", () => viewer.viewport.zoomBy(1.5));
-  document.querySelector("#zoom-out-button").addEventListener("click", () => viewer.viewport.zoomBy(0.67));
+  document.querySelector("#zoom-in-button").addEventListener("click", () => zoomBy(1.5));
+  document.querySelector("#zoom-out-button").addEventListener("click", () => zoomBy(0.67));
   document.querySelector("#reset-button").addEventListener("click", () => viewer.viewport.goHome());
 
   document.addEventListener("keydown", (event) => {
     if (viewerScreen.hidden || !viewer) return;
     if (event.key === "ArrowLeft") showPhoto(currentIndex - 1);
     if (event.key === "ArrowRight") showPhoto(currentIndex + 1);
-    if (event.key === "+" || event.key === "=") viewer.viewport.zoomBy(1.5);
-    if (event.key === "-") viewer.viewport.zoomBy(0.67);
+    if (event.key === "+" || event.key === "=") zoomBy(1.5);
+    if (event.key === "-") zoomBy(0.67);
     if (event.key === "0") viewer.viewport.goHome();
   });
 
