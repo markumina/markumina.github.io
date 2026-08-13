@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
+  <meta name="theme-color" content="#07111b">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>City View</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="city-view.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="lock-screen" class="lock-screen" aria-labelledby="lock-title">
+      <div class="window" role="dialog" aria-describedby="lock-message">
+        <div class="title-bar">
+          <span>City View</span>
+          <a class="window-close" href="../" aria-label="Close City View">×</a>
+        </div>
+        <div class="window-body">
+          <div class="city-monitor" aria-hidden="true">
+            <span class="building building-one"></span>
+            <span class="building building-two"></span>
+            <span class="building building-three"></span>
+            <span class="building building-four"></span>
+          </div>
+          <h1 id="lock-title">A view from my window</h1>
+          <p id="lock-message">This view is just for you.</p>
+          <form id="unlock-form" novalidate>
+            <label for="passphrase">Password</label>
+            <input id="passphrase" name="passphrase" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required>
+            <button class="win-button unlock-button" type="submit">Open City View</button>
+          </form>
+          <p id="lock-status" class="lock-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="loading-screen" class="loading-screen" hidden aria-labelledby="loading-title">
+      <div class="loading-city" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <h1 id="loading-title">Opening your view...</h1>
+      <p id="loading-detail">Getting the first picture ready</p>
+      <div class="progress-track" role="progressbar" aria-label="Loading pictures" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="progress-bar"></span>
+      </div>
+      <p id="progress-label" class="progress-label" aria-live="polite">Starting</p>
+    </section>
+
+    <section id="viewer-screen" class="viewer-screen" hidden aria-label="City photographs">
+      <header class="viewer-header">
+        <a class="header-button" href="../" aria-label="Close City View" title="Close City View">×</a>
+        <div class="viewer-title">
+          <strong>City View</strong>
+          <span id="photo-position">1 of 4</span>
+        </div>
+        <button id="reset-button" class="header-button reset-button" type="button" aria-label="Show whole picture" title="Show whole picture">⌂</button>
+      </header>
+
+      <div id="photo-viewer" class="photo-viewer" aria-label="Zoomable city photograph"></div>
+
+      <div id="ready-message" class="ready-message" role="status" aria-live="polite">
+        <strong>The full picture is ready.</strong>
+        <span>Pinch or use + to look closer.</span>
+      </div>
+
+      <div id="full-loading" class="full-loading" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="full-loading-text">Loading full detail...</span>
+        <span id="full-loading-percent">0%</span>
+      </div>
+
+      <nav class="viewer-controls" aria-label="Picture controls">
+        <button id="previous-button" class="control-button" type="button" aria-label="Previous picture" title="Previous picture">‹</button>
+        <button id="zoom-out-button" class="control-button" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+        <div id="photo-dots" class="photo-dots" aria-label="Choose a picture"></div>
+        <button id="zoom-in-button" class="control-button" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+        <button id="next-button" class="control-button" type="button" aria-label="Next picture" title="Next picture">›</button>
+      </nav>
+    </section>
+  </main>
+
+  <noscript>This view needs JavaScript enabled.</noscript>
+  <script src="assets/manifest.js"></script>
+  <script src="vendor/openseadragon.min.js"></script>
+  <script src="city-view.js"></script>
+</body>
+</html>

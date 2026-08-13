@@ -1,0 +1,5 @@
+# Exact camera files are local source material and must never enter the public repo.
+private/
+
+# Temporary, unencrypted previews produced by the city-view asset builder.
+city-view/assets/*.jpg
