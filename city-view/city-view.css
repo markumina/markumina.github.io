@@ -334,6 +334,7 @@ input:focus-visible {
 .photo-dot[aria-current="true"] { background: var(--gold); }
 
 .ready-message,
+.picture-nav-message,
 .full-loading {
   z-index: 15;
   position: fixed;
@@ -347,7 +348,8 @@ input:focus-visible {
   box-shadow: 0 5px 20px rgba(0,0,0,.45);
 }
 
-.ready-message {
+.ready-message,
+.picture-nav-message {
   top: calc(max(8px, env(safe-area-inset-top)) + 74px);
   padding: 12px 16px;
   opacity: 0;
@@ -355,12 +357,27 @@ input:focus-visible {
   transition: opacity .25s ease;
 }
 
-.ready-message.visible { opacity: 1; }
+.picture-nav-message {
+  top: auto;
+  bottom: calc(max(8px, env(safe-area-inset-bottom)) + 88px);
+}
+
+.ready-message.visible,
+.picture-nav-message.visible { opacity: 1; }
 
 .ready-message strong,
-.ready-message span { display: block; }
+.ready-message span,
+.picture-nav-message strong,
+.picture-nav-message span { display: block; }
 
-.ready-message span { margin-top: 4px; color: #d8e2e8; }
+.ready-message span,
+.picture-nav-message span { margin-top: 4px; color: #d8e2e8; }
+
+.viewer-screen.navigation-hint-visible #previous-button,
+.viewer-screen.navigation-hint-visible #next-button {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255,213,106,.28);
+}
 
 .full-loading {
   bottom: calc(max(8px, env(safe-area-inset-bottom)) + 88px);

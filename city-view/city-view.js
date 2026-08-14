@@ -18,6 +18,7 @@
   const fullLoadingText = document.querySelector("#full-loading-text");
   const fullLoadingPercent = document.querySelector("#full-loading-percent");
   const readyMessage = document.querySelector("#ready-message");
+  const pictureNavMessage = document.querySelector("#picture-nav-message");
   const unlockButton = document.querySelector(".unlock-button");
 
   let keyMaterial = null;
@@ -26,6 +27,9 @@
   let loadToken = 0;
   let currentUrls = [];
   let hideReadyTimer = 0;
+  let showNavigationHintTimer = 0;
+  let hideNavigationHintTimer = 0;
+  let navigationHintHandled = false;
 
   function setScreen(screen) {
     lockScreen.hidden = screen !== "lock";
@@ -191,6 +195,7 @@
   }
 
   function showPhoto(index) {
+    dismissNavigationHint();
     currentIndex = (index + manifest.photos.length) % manifest.photos.length;
     updatePosition();
     viewer.open({ type: "image", url: currentUrls[currentIndex] });
@@ -230,6 +235,7 @@
       fullLoadingText.textContent = "Full detail ready";
       fullLoadingPercent.textContent = "100%";
       showReadyMessage();
+      scheduleNavigationHint();
       setTimeout(() => {
         if (token === loadToken) fullLoading.hidden = true;
       }, 1800);
@@ -246,6 +252,27 @@
     clearTimeout(hideReadyTimer);
     readyMessage.classList.add("visible");
     hideReadyTimer = setTimeout(() => readyMessage.classList.remove("visible"), 5000);
+  }
+
+  function scheduleNavigationHint() {
+    if (navigationHintHandled || showNavigationHintTimer) return;
+    showNavigationHintTimer = setTimeout(() => {
+      showNavigationHintTimer = 0;
+      if (navigationHintHandled) return;
+      pictureNavMessage.classList.add("visible");
+      viewerScreen.classList.add("navigation-hint-visible");
+      hideNavigationHintTimer = setTimeout(dismissNavigationHint, 8000);
+    }, 1900);
+  }
+
+  function dismissNavigationHint() {
+    navigationHintHandled = true;
+    clearTimeout(showNavigationHintTimer);
+    clearTimeout(hideNavigationHintTimer);
+    showNavigationHintTimer = 0;
+    hideNavigationHintTimer = 0;
+    pictureNavMessage.classList.remove("visible");
+    viewerScreen.classList.remove("navigation-hint-visible");
   }
 
   function zoomBy(factor) {
