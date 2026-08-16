@@ -10,6 +10,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -68,6 +72,32 @@ a:focus-visible {
 .title-bar-name img {
   width: 16px;
   height: 16px;
+}
+
+.title-bar-close {
+  display: none;
+  width: 23px;
+  height: 21px;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 2px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;
+  place-items: center;
+  background: #c0c0c0;
+  color: #000000;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.site-js .title-bar-close {
+  display: grid;
+}
+
+.title-bar-close:active {
+  border-color: #404040 #ffffff #ffffff #404040;
 }
 
 .menu-bar {
@@ -257,6 +287,59 @@ fieldset li {
   padding: 3px 5px;
   border: 2px solid;
   border-color: #808080 #ffffff #ffffff #808080;
+}
+
+body.desktop-open {
+  overflow: hidden;
+  padding: 0;
+}
+
+.desktop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+  background: #008080;
+}
+
+.desktop-icon {
+  display: grid;
+  width: 96px;
+  min-height: 102px;
+  align-content: start;
+  justify-items: center;
+  gap: 7px;
+  padding: 7px 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #ffffff;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.25;
+  text-shadow: 1px 1px 0 #000000;
+  cursor: default;
+}
+
+.desktop-icon-image {
+  display: grid;
+  width: 64px;
+  height: 56px;
+  place-items: center;
+}
+
+.desktop-icon img {
+  display: block;
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  border-color: #ffffff;
+  outline: 1px dotted #000000;
+  outline-offset: -3px;
+  background: #000080;
 }
 
 @media (max-width: 680px) {
