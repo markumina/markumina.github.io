@@ -282,11 +282,32 @@ fieldset li {
   font-size: 10px;
 }
 
-.window-status span {
+.window-status span,
+.footer-top {
   flex: 1;
   padding: 3px 5px;
   border: 2px solid;
   border-color: #808080 #ffffff #ffffff #808080;
+}
+
+.footer-top {
+  flex: 0 0 auto;
+  min-width: 62px;
+  color: #000000;
+  text-align: center;
+  text-decoration: none;
+}
+
+.footer-top:visited {
+  color: #000000;
+}
+
+.footer-top:hover {
+  background: #d3d3d3;
+}
+
+.footer-top:active {
+  border-color: #ffffff #808080 #808080 #ffffff;
 }
 
 body.desktop-open {
