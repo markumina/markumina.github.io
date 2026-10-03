@@ -43,8 +43,21 @@ const sceneDefinitions = {
     hotspots: [
       { action: "streetUtility", label: "utility box", left: 0, top: 50, width: 12, height: 30, walk: [11, 82] },
       { action: "riverStone", label: "round stone", left: 8, top: 66, width: 9, height: 12, walk: [15, 83] },
-      { action: "bridgePath", label: "path under the bridge", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit" },
-      { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit" }
+      { action: "bridgePath", label: "riverside path", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit", arrow: "down-left", arrowX: 25, arrowY: 66 },
+      { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit", arrow: "right", arrowX: 76, arrowY: 62 }
+    ]
+  },
+  riverside: {
+    image: "assets/scene-riverside.png",
+    alt: "A quiet riverside path descending from town toward an old stone bridge",
+    location: "Riverside Path",
+    start: [18, 83],
+    walk: { minX: 5, maxX: 95, minY: 69, maxY: 91 },
+    hotspots: [
+      { action: "riversideBack", label: "Willow Street", left: 0, top: 13, width: 24, height: 68, walk: [10, 76], kind: "exit", arrow: "up-left", arrowX: 38, arrowY: 44 },
+      { action: "riversideLamp", label: "old streetlamp", left: 38, top: 29, width: 15, height: 48, walk: [46, 78] },
+      { action: "riversideRiver", label: "river", left: 52, top: 43, width: 38, height: 27, walk: [65, 72] },
+      { action: "riversideForward", label: "under the bridge", left: 73, top: 29, width: 27, height: 62, walk: [89, 82], kind: "exit", arrow: "right", arrowX: 72, arrowY: 64 }
     ]
   },
   bridge: {
@@ -53,12 +66,19 @@ const sceneDefinitions = {
     location: "Under Hawthorn Bridge",
     start: [40, 84],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
+    patches: [
+      {
+        target: [328, 157, 19, 15],
+        source: [304, 157],
+        when: function () { return state.flags.deliveryTagFound; }
+      }
+    ],
     hotspots: [
-      { action: "bridgeBack", label: "path uphill", left: 0, top: 27, width: 18, height: 54, walk: [8, 82], kind: "exit" },
+      { action: "bridgeBack", label: "riverside path", left: 0, top: 27, width: 18, height: 54, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 44, arrowY: 72 },
       { action: "bridgeRiver", label: "river", left: 0, top: 28, width: 46, height: 38, walk: [29, 77] },
       { action: "stormDrain", label: "storm drain", left: 0, top: 74, width: 23, height: 18, walk: [16, 84], kind: "pickup" },
-      { action: "deliveryTag", label: "paper by the step", left: 83, top: 64, width: 10, height: 10, walk: [82, 82], kind: "pickup" },
-      { action: "pumpDoor", label: "boarded pump building", left: 72, top: 16, width: 27, height: 55, walk: [85, 81] }
+      { action: "pumpDoor", label: "boarded pump building", left: 72, top: 16, width: 27, height: 55, walk: [85, 81], arrow: "right", arrowX: 72, arrowY: 68 },
+      { action: "deliveryTag", label: "paper by the step", left: 80, top: 60, width: 16, height: 17, walk: [82, 82], kind: "pickup", when: function () { return !state.flags.deliveryTagFound; } }
     ]
   },
   pizzeria: {
@@ -68,11 +88,11 @@ const sceneDefinitions = {
     start: [20, 87],
     walk: { minX: 6, maxX: 94, minY: 67, maxY: 92 },
     hotspots: [
-      { action: "pizzeriaExit", label: "Willow Street", left: 0, top: 40, width: 11, height: 50, walk: [8, 84], kind: "exit" },
+      { action: "pizzeriaExit", label: "Willow Street", left: 0, top: 40, width: 11, height: 50, walk: [8, 84], kind: "exit", arrow: "left" },
       { action: "townPhotos", label: "old town photographs", left: 5, top: 13, width: 31, height: 30, walk: [28, 73] },
       { action: "pizzaCounter", label: "pizza counter", left: 37, top: 38, width: 49, height: 28, walk: [58, 72] },
       { action: "enzo", label: "Enzo Bellini", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
-      { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit" }
+      { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit", arrow: "right" }
     ]
   },
   backroom: {
@@ -81,11 +101,28 @@ const sceneDefinitions = {
     location: "Bellini's / Back Room",
     start: [11, 85],
     walk: { minX: 5, maxX: 95, minY: 70, maxY: 92 },
+    patches: [
+      {
+        target: [123, 101, 18, 63],
+        source: [141, 101],
+        when: function () { return state.flags.pryBarFound; }
+      },
+      {
+        target: [185, 109, 26, 14],
+        source: [159, 109],
+        when: function () { return state.flags.fuseFound || state.flags.fuseInstalled; }
+      },
+      {
+        target: [321, 61, 29, 31],
+        source: [350, 61],
+        when: function () { return state.flags.lensTaken; }
+      }
+    ],
     hotspots: [
-      { action: "backroomExit", label: "dining room", left: 0, top: 17, width: 10, height: 70, walk: [7, 84], kind: "exit" },
-      { action: "pryBar", label: "short pry bar", left: 28, top: 34, width: 10, height: 34, walk: [33, 78], kind: "pickup" },
+      { action: "backroomExit", label: "dining room", left: 0, top: 17, width: 10, height: 70, walk: [7, 84], kind: "exit", arrow: "left" },
+      { action: "pryBar", label: "short pry bar", left: 28, top: 34, width: 10, height: 34, walk: [33, 78], kind: "pickup", when: function () { return !state.flags.pryBarFound; } },
       { action: "oldPlans", label: "old bridge plans", left: 36, top: 22, width: 31, height: 27, walk: [51, 72] },
-      { action: "ceramicFuse", label: "white ceramic fuse", left: 49, top: 42, width: 13, height: 12, walk: [54, 73], kind: "pickup" },
+      { action: "ceramicFuse", label: "white ceramic fuse", left: 49, top: 42, width: 13, height: 12, walk: [54, 73], kind: "pickup", when: function () { return !state.flags.fuseFound && !state.flags.fuseInstalled; } },
       { action: "fuseBox", label: "fuse box", left: 69, top: 17, width: 12, height: 30, walk: [73, 73] },
       { action: "cameraCabinet", label: "locked cabinet", left: 81, top: 9, width: 19, height: 60, walk: [87, 77] }
     ]
@@ -105,7 +142,7 @@ const sceneDefinitions = {
     start: [17, 86],
     walk: { minX: 5, maxX: 95, minY: 71, maxY: 92 },
     hotspots: [
-      { action: "pumpExit", label: "bridge path", left: 0, top: 12, width: 10, height: 73, walk: [7, 83], kind: "exit" },
+      { action: "pumpExit", label: "bridge path", left: 0, top: 12, width: 10, height: 73, walk: [7, 83], kind: "exit", arrow: "left" },
       { action: "workbench", label: "workbench", left: 0, top: 27, width: 28, height: 33, walk: [22, 75] },
       { action: "oldPump", label: "water pumps", left: 29, top: 17, width: 47, height: 43, walk: [52, 72] },
       {
@@ -126,6 +163,7 @@ const sceneDefinitions = {
         width: 24,
         height: 16,
         walk: [72, 78],
+        arrow: "down",
         when: function () { return state.flags.hatchRevealed; }
       }
     ]
@@ -137,10 +175,10 @@ const sceneDefinitions = {
     start: [18, 85],
     walk: { minX: 6, maxX: 94, minY: 72, maxY: 91 },
     hotspots: [
-      { action: "vestibuleExit", label: "stairs to the pump room", left: 0, top: 13, width: 27, height: 59, walk: [16, 79], kind: "exit" },
+      { action: "vestibuleExit", label: "stairs to the pump room", left: 0, top: 13, width: 27, height: 59, walk: [16, 79], kind: "exit", arrow: "left" },
       { action: "mural", label: "star mosaic", left: 36, top: 18, width: 22, height: 28, walk: [46, 72] },
       { action: "pedestal", label: "stone pedestal", left: 38, top: 43, width: 24, height: 26, walk: [50, 76] },
-      { action: "barrier", label: "circular stone barrier", left: 67, top: 18, width: 32, height: 53, walk: [81, 78] }
+      { action: "barrier", label: "circular stone barrier", left: 67, top: 18, width: 32, height: 53, walk: [81, 78], arrow: "right" }
     ]
   },
   chamber: {
@@ -150,10 +188,10 @@ const sceneDefinitions = {
     start: [17, 86],
     walk: { minX: 6, maxX: 94, minY: 71, maxY: 92 },
     hotspots: [
-      { action: "chamberExit", label: "vestibule", left: 0, top: 19, width: 18, height: 52, walk: [10, 81], kind: "exit" },
+      { action: "chamberExit", label: "vestibule", left: 0, top: 19, width: 18, height: 52, walk: [10, 81], kind: "exit", arrow: "left" },
       { action: "starDial", label: "brass star dial", left: 35, top: 31, width: 19, height: 33, walk: [44, 75] },
       { action: "riverDial", label: "round floor dial", left: 52, top: 61, width: 19, height: 15, walk: [61, 79] },
-      { action: "portal", label: "stone ring", left: 69, top: 15, width: 30, height: 58, walk: [82, 78] }
+      { action: "portal", label: "stone ring", left: 69, top: 15, width: 30, height: 58, walk: [82, 78], arrow: "right" }
     ]
   },
   cosmos: {
@@ -241,12 +279,14 @@ let positions = {
 
 const gameStage = document.querySelector("#game-stage");
 const sceneImage = document.querySelector("#scene-image");
+const scenePatches = document.querySelector("#scene-patches");
 const sceneLoader = document.querySelector("#scene-loader");
 const hotspots = document.querySelector("#hotspots");
 const inventory = document.querySelector("#inventory");
 const heldItem = document.querySelector("#held-item");
 const locationLabel = document.querySelector("#location-label");
 const objectLabel = document.querySelector("#object-label");
+const dialogue = document.querySelector("#dialogue");
 const speaker = document.querySelector("#speaker");
 const dialogueLine = document.querySelector("#dialogue-line");
 const dialogueNext = document.querySelector("#dialogue-next");
@@ -282,15 +322,12 @@ function removeItem(item) {
 }
 
 function setLine(name, text) {
-  activeDialogue = null;
-  dialogueDone = null;
-  dialogueNext.hidden = true;
-  speaker.textContent = name;
-  dialogueLine.textContent = text;
+  playDialogue([{ speaker: name, text: text }]);
 }
 
 function showDialogueLine() {
   const line = activeDialogue[dialogueIndex];
+  dialogue.hidden = false;
   speaker.textContent = line.speaker;
   dialogueLine.textContent = line.text;
   dialogueNext.hidden = false;
@@ -315,6 +352,7 @@ function advanceDialogue() {
   const onDone = dialogueDone;
   activeDialogue = null;
   dialogueDone = null;
+  dialogue.hidden = true;
   dialogueNext.hidden = true;
   if (onDone) onDone();
 }
@@ -377,6 +415,39 @@ function hideObjectLabel() {
   objectLabel.hidden = true;
 }
 
+function renderScenePatches(imageSource) {
+  scenePatches.replaceChildren();
+  const definition = sceneDefinitions[state.scene];
+
+  (definition.patches || []).forEach(function (patch) {
+    if (patch.when && !patch.when()) return;
+
+    const target = patch.target;
+    const source = patch.source;
+    const patchElement = document.createElement("span");
+    const patchImage = document.createElement("img");
+
+    patchElement.className = "scene-patch";
+    patchElement.style.left = (target[0] / 384 * 100) + "%";
+    patchElement.style.top = (target[1] / 256 * 100) + "%";
+    patchElement.style.width = (target[2] / 384 * 100) + "%";
+    patchElement.style.height = (target[3] / 256 * 100) + "%";
+
+    patchImage.src = imageSource;
+    patchImage.alt = "";
+    patchImage.draggable = false;
+    patchImage.width = 384;
+    patchImage.height = 256;
+    patchImage.style.width = (384 / target[2] * 100) + "%";
+    patchImage.style.height = (256 / target[3] * 100) + "%";
+    patchImage.style.left = -(source[0] / target[2] * 100) + "%";
+    patchImage.style.top = -(source[1] / target[3] * 100) + "%";
+
+    patchElement.append(patchImage);
+    scenePatches.append(patchElement);
+  });
+}
+
 function renderHotspots() {
   hotspots.replaceChildren();
   const definition = sceneDefinitions[state.scene];
@@ -389,6 +460,11 @@ function renderHotspots() {
     button.type = "button";
     button.dataset.action = hotspot.action;
     button.dataset.label = hotspot.label;
+    if (hotspot.arrow) {
+      button.dataset.arrow = hotspot.arrow;
+      button.style.setProperty("--arrow-x", (hotspot.arrowX || 50) + "%");
+      button.style.setProperty("--arrow-y", (hotspot.arrowY || 50) + "%");
+    }
     button.setAttribute("aria-label", hotspot.label);
     button.style.left = hotspot.left + "%";
     button.style.top = hotspot.top + "%";
@@ -510,6 +586,7 @@ function walkTo(x, y, onArrival) {
 
 function idleLine() {
   if (state.scene === "street") return ["Billi", "The fireflies keep drifting down the path toward the bridge."];
+  if (state.scene === "riverside") return ["Billi", "The fireflies are keeping to the river path."];
   if (state.scene === "bridge") return ["Mumi", "The little pump building has been boarded up for years."];
   if (state.scene === "pizzeria") return ["Enzo", "The oven is off. The coffee has made no such promise."];
   if (state.scene === "backroom") return ["Billi", "Enzo's father kept everything."];
@@ -547,6 +624,7 @@ function renderScene(resetCharacters) {
   }
 
   renderHotspots();
+  renderScenePatches(imageSource);
   renderInventory();
   hideObjectLabel();
   if (resetCharacters) resetWalkers(state.scene);
@@ -555,6 +633,7 @@ function renderScene(resetCharacters) {
 function refreshState() {
   saveState();
   renderHotspots();
+  renderScenePatches(sceneValue(sceneDefinitions[state.scene].image));
   renderInventory();
 }
 
@@ -655,10 +734,22 @@ const actions = {
     setLine("Billi", "Just a cold round stone. It can stay here.");
   },
 
-  bridgePath: enterBridge,
+  bridgePath: function () { goToScene("riverside"); },
   pizzeriaDoor: enterPizzeria,
 
-  bridgeBack: function () { goToScene("street"); },
+  riversideBack: function () { goToScene("street"); },
+
+  riversideLamp: function () {
+    setLine("Mumi", "The bulb is warm. Someone still maintains this path.");
+  },
+
+  riversideRiver: function () {
+    setLine("Billi", "The river is almost black from here.");
+  },
+
+  riversideForward: enterBridge,
+
+  bridgeBack: function () { goToScene("riverside"); },
 
   bridgeRiver: function () {
     setLine("Billi", "The current and the reflected lights are moving in opposite directions.");
@@ -984,8 +1075,9 @@ function runInteraction(hotspot) {
 
 function preloadNextScenes(scene) {
   const sceneOrder = {
-    street: ["bridge", "pizzeria"],
-    bridge: ["street", "pizzeria", "pumphouse"],
+    street: ["riverside", "pizzeria"],
+    riverside: ["street", "bridge"],
+    bridge: ["riverside", "pizzeria", "pumphouse"],
     pizzeria: ["street", "backroom"],
     backroom: ["pizzeria", "bridge"],
     pumphouse: ["bridge", "vestibule"],
@@ -1045,7 +1137,10 @@ gameStage.addEventListener("click", function (event) {
   walkTo(x, y);
 });
 
-dialogueNext.addEventListener("click", advanceDialogue);
+dialogue.addEventListener("click", function (event) {
+  event.stopPropagation();
+  advanceDialogue();
+});
 
 document.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && activeDialogue && event.target === document.body) {

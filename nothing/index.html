@@ -31,6 +31,7 @@
   <section class="scene-well" aria-label="Game scene">
     <div class="game-stage" id="game-stage">
       <img class="scene-image" id="scene-image" src="assets/scene-street.png" width="384" height="256" alt="A quiet neighborhood street at night">
+      <div class="scene-patches" id="scene-patches" aria-hidden="true"></div>
 
       <div class="walkers" aria-hidden="true">
         <span class="walker walker--mumi" id="mumi"><span class="walker-sprite"></span></span>
@@ -39,6 +40,11 @@
 
       <div class="hotspots" id="hotspots"></div>
       <span class="object-label" id="object-label" hidden></span>
+
+      <section class="dialogue" id="dialogue" aria-live="polite" aria-atomic="true">
+        <p><strong id="speaker">Billi</strong><span id="dialogue-line">The fireflies are going down the bridge path.</span></p>
+        <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue">continue&nbsp;&rsaquo;</button>
+      </section>
 
       <div class="scene-loader" id="scene-loader" hidden aria-label="Loading scene">
         <span aria-hidden="true"></span><span aria-hidden="true"></span>
@@ -54,11 +60,6 @@
         </div>
       </section>
     </div>
-  </section>
-
-  <section class="dialogue" id="dialogue" aria-live="polite" aria-atomic="true">
-    <p><strong id="speaker">Billi</strong><span id="dialogue-line">The fireflies are going down the bridge path.</span></p>
-    <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue" title="Continue dialogue" hidden>&rsaquo;</button>
   </section>
 
   <footer class="pocket-bar">
