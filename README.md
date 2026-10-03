@@ -2,6 +2,13 @@
 
 Source for [albaphet.org](https://www.albaphet.org/).
 
+## Nothing
+
+`nothing/` is a self-contained low-resolution point-and-click adventure. It has
+no build step or runtime dependencies. Characters walk to clicked locations,
+inventory items are selected before use, and progress is saved in the browser
+with `localStorage`.
+
 ## City View
 
 `city-view/` is a private, full-resolution photo viewer designed for touchscreens

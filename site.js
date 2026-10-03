@@ -27,3 +27,10 @@ function showSiteWindow() {
 
 closeSiteWindow.addEventListener("click", showDesktop);
 openSiteWindow.addEventListener("click", showSiteWindow);
+
+const desktopRequested = new URLSearchParams(window.location.search).get("desktop") === "1";
+
+if (desktopRequested) {
+  window.history.replaceState(null, "", `${window.location.pathname}${window.location.hash}`);
+  showDesktop();
+}
