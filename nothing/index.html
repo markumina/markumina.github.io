@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nothing | albaphet.org</title>
+<meta name="description" content="A small point-and-click game about Billi, Mumi, a pizza shop, and a path beneath the bridge.">
+<link rel="canonical" href="https://www.albaphet.org/nothing/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="albaphet.org">
+<meta property="og:title" content="Nothing">
+<meta property="og:description" content="A small point-and-click game about a quiet town after midnight.">
+<meta property="og:url" content="https://www.albaphet.org/nothing/">
+<meta property="og:image" content="https://www.albaphet.org/nothing/assets/scene-street.png">
+<meta property="og:image:width" content="384">
+<meta property="og:image:height" content="256">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+<link rel="preload" href="assets/scene-street.png" as="image" type="image/png">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<main class="game-window" id="game-window">
+  <header class="game-title-bar">
+    <h1><img src="assets/nothing-icon.svg" width="32" height="32" alt=""> Nothing</h1>
+    <span class="location-label" id="location-label">Willow Street</span>
+    <a class="window-close" href="../?desktop=1" aria-label="Close Nothing" title="Close">&times;</a>
+  </header>
+
+  <section class="scene-well" aria-label="Game scene">
+    <div class="game-stage" id="game-stage">
+      <img class="scene-image" id="scene-image" src="assets/scene-street.png" width="384" height="256" alt="A quiet neighborhood street at night">
+      <div class="scene-patches" id="scene-patches" aria-hidden="true"></div>
+
+      <div class="walkers" aria-hidden="true">
+        <span class="walker walker--mumi" id="mumi"><span class="walker-sprite"></span></span>
+        <span class="walker walker--billi" id="billi"><span class="walker-sprite"></span></span>
+      </div>
+
+      <div class="hotspots" id="hotspots"></div>
+      <span class="object-label" id="object-label" hidden></span>
+
+      <section class="dialogue" id="dialogue" aria-live="polite" aria-atomic="true">
+        <p><strong id="speaker">Billi</strong><span id="dialogue-line">The fireflies are going down the bridge path.</span></p>
+        <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue">continue&nbsp;&rsaquo;</button>
+      </section>
+
+      <div class="scene-loader" id="scene-loader" hidden aria-label="Loading scene">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </div>
+
+      <section class="ending-panel" id="ending-panel" role="dialog" aria-labelledby="ending-title" hidden>
+        <p>End of part one</p>
+        <h2 id="ending-title">Nothing below. Nothing above.</h2>
+        <div class="ending-actions">
+          <button class="bevel-button" id="play-again" type="button">Play again</button>
+          <a class="bevel-button" href="../?desktop=1">Desktop</a>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <footer class="pocket-bar">
+    <span class="pocket-label">pocket</span>
+    <div class="inventory" id="inventory" aria-label="Pocket"></div>
+    <span class="held-item" id="held-item" hidden>holding <strong></strong></span>
+    <button class="restart-button" id="restart-game" type="button" aria-label="Restart game" title="Restart game">&#8635;</button>
+  </footer>
+</main>
+
+<noscript>
+  <p class="noscript-message">Nothing needs JavaScript to run.</p>
+</noscript>
+
+<script src="game.js"></script>
+</body>
+</html>
