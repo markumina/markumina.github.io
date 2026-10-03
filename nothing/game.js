@@ -340,6 +340,13 @@ function playDialogue(lines, onDone) {
   showDialogueLine();
 }
 
+function hideDialogue() {
+  activeDialogue = null;
+  dialogueDone = null;
+  dialogue.hidden = true;
+  dialogueNext.hidden = true;
+}
+
 function advanceDialogue() {
   if (!activeDialogue) return;
 
@@ -350,10 +357,7 @@ function advanceDialogue() {
   }
 
   const onDone = dialogueDone;
-  activeDialogue = null;
-  dialogueDone = null;
-  dialogue.hidden = true;
-  dialogueNext.hidden = true;
+  hideDialogue();
   if (onDone) onDone();
 }
 
@@ -584,22 +588,6 @@ function walkTo(x, y, onArrival) {
   window.requestAnimationFrame(frame);
 }
 
-function idleLine() {
-  if (state.scene === "street") return ["Billi", "The fireflies keep drifting down the path toward the bridge."];
-  if (state.scene === "riverside") return ["Billi", "The fireflies are keeping to the river path."];
-  if (state.scene === "bridge") return ["Mumi", "The little pump building has been boarded up for years."];
-  if (state.scene === "pizzeria") return ["Enzo", "The oven is off. The coffee has made no such promise."];
-  if (state.scene === "backroom") return ["Billi", "Enzo's father kept everything."];
-  if (state.scene === "pumphouse") {
-    return state.flags.hatchRevealed
-      ? ["Mumi", "That hatch was hidden carefully."]
-      : ["Billi", "The fireflies keep landing on the tarp."];
-  }
-  if (state.scene === "vestibule") return ["Mumi", "This stonework was here before the pump station."];
-  if (state.scene === "chamber") return ["Billi", "The ring is waiting for something."];
-  return ["Mumi", "There is no down."];
-}
-
 function renderScene(resetCharacters) {
   const definition = sceneDefinitions[state.scene];
   const imageSource = sceneValue(definition.image);
@@ -645,8 +633,7 @@ function goToScene(scene, lines) {
   if (lines && lines.length) {
     playDialogue(lines);
   } else {
-    const line = idleLine();
-    setLine(line[0], line[1]);
+    hideDialogue();
   }
   preloadNextScenes(scene);
 }
@@ -1149,8 +1136,6 @@ document.addEventListener("keydown", function (event) {
   }
   if (event.key === "Escape" && state.selectedItem) {
     clearSelection();
-    const line = idleLine();
-    setLine(line[0], line[1]);
   }
 });
 
@@ -1177,8 +1162,7 @@ if (state.scene === "cosmos") {
     { speaker: "Billi", text: "They probably know the neighborhood better than we do." }
   ]);
 } else {
-  const line = idleLine();
-  setLine(line[0], line[1]);
+  hideDialogue();
 }
 
 preloadNextScenes(state.scene);
