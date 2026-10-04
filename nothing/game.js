@@ -74,9 +74,9 @@ const sceneDefinitions = {
       }
     ],
     hotspots: [
-      { action: "bridgeBack", label: "riverside path", left: 0, top: 27, width: 18, height: 54, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 44, arrowY: 72 },
-      { action: "bridgeRiver", label: "river", left: 0, top: 28, width: 46, height: 38, walk: [29, 77] },
-      { action: "stormDrain", label: "storm drain", left: 0, top: 74, width: 23, height: 18, walk: [16, 84], kind: "pickup" },
+      { action: "bridgeBack", label: "riverside path", left: 0, top: 45, width: 14, height: 26, walk: [8, 78], kind: "exit", arrow: "left", arrowX: 43, arrowY: 45 },
+      { action: "bridgeRiver", label: "river", left: 14, top: 28, width: 32, height: 38, walk: [29, 77] },
+      { action: "stormDrain", label: "storm drain", left: 1, top: 74, width: 11, height: 12, walk: [13, 84], kind: "pickup" },
       { action: "pumpDoor", label: "boarded pump building", left: 72, top: 16, width: 27, height: 55, walk: [85, 81], arrow: "right", arrowX: 72, arrowY: 68 },
       { action: "deliveryTag", label: "paper by the step", left: 80, top: 60, width: 16, height: 17, walk: [82, 82], kind: "pickup", when: function () { return !state.flags.deliveryTagFound; } }
     ]
