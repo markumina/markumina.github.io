@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="64" viewBox="0 0 112 64">
+  <rect x="3" y="3" width="106" height="58" rx="12" fill="#352019" stroke="#17151a" stroke-width="6"/>
+  <rect x="8" y="8" width="96" height="48" rx="8" fill="none" stroke="#9b5423" stroke-width="2"/>
+  <text x="56" y="29" fill="#ffd078" stroke="#17151a" stroke-width="1" paint-order="stroke" text-anchor="middle" font-family="Courier New, monospace" font-size="18" font-weight="700">PIE'D</text>
+  <text x="56" y="49" fill="#ffd078" stroke="#17151a" stroke-width="1" paint-order="stroke" text-anchor="middle" font-family="Courier New, monospace" font-size="18" font-weight="700">PIPER</text>
+</svg>

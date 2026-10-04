@@ -30,6 +30,24 @@ const itemDetails = {
     speaker: "Billi",
     held: "The amber lens. It looks older than the cabinet it was locked in.",
     description: "A thick amber survey lens in a brass ring."
+  },
+  pumpkinCookie: {
+    label: "pumpkin cookie",
+    speaker: "Billi",
+    held: "A pumpkin-shaped cookie. One of the bats keeps staring at it.",
+    description: "Ginger, molasses, and a face considerably happier than the bats."
+  },
+  punchCup: {
+    label: "paper cup",
+    speaker: "Mumi",
+    held: "An empty paper cup from Nora's tasting table.",
+    description: "Orange paper, black stars, and no punch yet."
+  },
+  spicedPunch: {
+    label: "spiced punch",
+    speaker: "Billi",
+    held: "A warm cup of Nora's spiced apple punch.",
+    description: "Apple, cinnamon, orange peel, and a suspicious amount of clove."
   }
 };
 
@@ -44,7 +62,8 @@ const sceneDefinitions = {
       { action: "streetUtility", label: "utility box", left: 0, top: 50, width: 12, height: 30, walk: [11, 82] },
       { action: "riverStone", label: "round stone", left: 8, top: 66, width: 9, height: 12, walk: [15, 83] },
       { action: "bridgePath", label: "riverside path", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit", arrow: "down-left", arrowX: 25, arrowY: 66 },
-      { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit", arrow: "right", arrowX: 76, arrowY: 62 }
+      { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit", arrow: "right", arrowX: 76, arrowY: 62 },
+      { action: "marketPath", label: "shops farther up Willow Street", left: 88, top: 79, width: 12, height: 15, walk: [93, 86], kind: "exit", arrow: "right", arrowX: 48, arrowY: 42 }
     ]
   },
   riverside: {
@@ -93,6 +112,52 @@ const sceneDefinitions = {
       { action: "pizzaCounter", label: "pizza counter", left: 37, top: 38, width: 49, height: 28, walk: [58, 72] },
       { action: "enzo", label: "Enzo Bellini", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
       { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit", arrow: "right" }
+    ]
+  },
+  market: {
+    image: "assets/scene-pied-piper-exterior.png",
+    alt: "A warmly lit Halloween pie shop three doors down from Bellini's",
+    location: "Market Street / Three Doors Down",
+    start: [12, 85],
+    walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
+    decorations: [
+      { asset: "assets/pied-piper-sign.svg", left: 76, top: 14, width: 14, height: 14, className: "scene-decoration--sign" }
+    ],
+    hotspots: [
+      { action: "marketBack", label: "Willow Street", left: 0, top: 35, width: 14, height: 38, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 42, arrowY: 68 },
+      { action: "piperWindows", label: "Pie'd Piper windows", left: 43, top: 38, width: 29, height: 34, walk: [58, 78] },
+      { action: "piperSign", label: "Pie'd Piper sign", left: 75, top: 12, width: 16, height: 18, walk: [80, 77] },
+      { action: "piperDoor", label: "Pie'd Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 50, arrowY: 78 },
+      { action: "marketPumpkins", label: "jack-o'-lanterns", left: 64, top: 62, width: 34, height: 19, walk: [79, 82] }
+    ]
+  },
+  piedPiper: {
+    image: "assets/scene-pied-piper.png",
+    alt: "A cozy Halloween pie shop with Nora Piper, hanging bats, cookies, cups, and a steaming pot",
+    location: "Pie'd Piper",
+    start: [14, 84],
+    walk: { minX: 6, maxX: 94, minY: 68, maxY: 91 },
+    patches: [
+      {
+        target: [153, 108, 22, 28],
+        source: [175, 108],
+        when: function () { return state.flags.cupTaken; }
+      },
+      {
+        target: [129, 126, 42, 20],
+        source: [171, 126],
+        when: function () { return state.flags.cookieTaken; }
+      }
+    ],
+    hotspots: [
+      { action: "piperExit", label: "Market Street", left: 0, top: 18, width: 13, height: 55, walk: [8, 79], kind: "exit", arrow: "left", arrowX: 45, arrowY: 72 },
+      { action: "piperBats", label: "hanging bats", left: 12, top: 5, width: 20, height: 17, walk: [25, 72] },
+      { action: "piperDecorations", label: "Halloween shelves", left: 45, top: 5, width: 22, height: 38, walk: [55, 70] },
+      { action: "witchBrew", label: "smoking punch pot", left: 27, top: 36, width: 12, height: 15, walk: [34, 75] },
+      { action: "punchCups", label: "paper punch cups", left: 40, top: 39, width: 9, height: 12, walk: [44, 75], kind: "pickup", when: function () { return !state.flags.cupTaken; } },
+      { action: "cookiePlate", label: "pumpkin cookies", left: 33, top: 52, width: 15, height: 10, walk: [42, 77], kind: "pickup", when: function () { return !state.flags.cookieTaken; } },
+      { action: "pieCase", label: "pie case", left: 61, top: 44, width: 29, height: 28, walk: [68, 72] },
+      { action: "nora", label: "Nora Piper", left: 74, top: 27, width: 14, height: 18, walk: [76, 70] }
     ]
   },
   backroom: {
@@ -220,6 +285,12 @@ function freshState() {
       deliveryTagFound: false,
       tokenFound: false,
       pizzeriaVisited: false,
+      piperVisited: false,
+      cookieTaken: false,
+      cupTaken: false,
+      punchFilled: false,
+      batFed: false,
+      enzoHadPunch: false,
       enzoTrusts: false,
       backroomVisited: false,
       pryBarFound: false,
@@ -272,6 +343,7 @@ let activeDialogue = null;
 let dialogueIndex = 0;
 let dialogueDone = null;
 let walkRequest = 0;
+let batRemarkIndex = 0;
 let positions = {
   billi: { x: 52, y: 85 },
   mumi: { x: 47, y: 86 }
@@ -280,6 +352,7 @@ let positions = {
 const gameStage = document.querySelector("#game-stage");
 const sceneImage = document.querySelector("#scene-image");
 const scenePatches = document.querySelector("#scene-patches");
+const sceneDecorations = document.querySelector("#scene-decorations");
 const sceneLoader = document.querySelector("#scene-loader");
 const hotspots = document.querySelector("#hotspots");
 const inventory = document.querySelector("#inventory");
@@ -452,6 +525,26 @@ function renderScenePatches(imageSource) {
   });
 }
 
+function renderSceneDecorations() {
+  sceneDecorations.replaceChildren();
+  const definition = sceneDefinitions[state.scene];
+
+  (definition.decorations || []).forEach(function (decoration) {
+    if (decoration.when && !decoration.when()) return;
+
+    const image = document.createElement("img");
+    image.className = "scene-decoration" + (decoration.className ? " " + decoration.className : "");
+    image.src = decoration.asset;
+    image.alt = "";
+    image.draggable = false;
+    image.style.left = decoration.left + "%";
+    image.style.top = decoration.top + "%";
+    image.style.width = decoration.width + "%";
+    image.style.height = decoration.height + "%";
+    sceneDecorations.append(image);
+  });
+}
+
 function renderHotspots() {
   hotspots.replaceChildren();
   const definition = sceneDefinitions[state.scene];
@@ -613,6 +706,7 @@ function renderScene(resetCharacters) {
 
   renderHotspots();
   renderScenePatches(imageSource);
+  renderSceneDecorations();
   renderInventory();
   hideObjectLabel();
   if (resetCharacters) resetWalkers(state.scene);
@@ -654,6 +748,17 @@ function enterPizzeria() {
     { speaker: "Enzo", text: "The oven is off, but I can still manage two slices." },
     { speaker: "Billi", text: "We're only walking." },
     { speaker: "Enzo", text: "Under that bridge? Then walk with your eyes open." }
+  ] : null);
+}
+
+function enterPiedPiper() {
+  const firstVisit = !state.flags.piperVisited;
+  state.flags.piperVisited = true;
+  goToScene("piedPiper", firstVisit ? [
+    { speaker: "Nora", text: "Come in. The punch is warm and the bats are in a mood." },
+    { speaker: "Billi", text: "Those are paper bats." },
+    { speaker: "Left Bat", text: "Decorative, she says. After everything we do for the ceiling." },
+    { speaker: "Nora", text: "They get difficult after ten." }
   ] : null);
 }
 
@@ -712,6 +817,13 @@ function enterCosmos() {
   });
 }
 
+const batRemarks = [
+  { speaker: "Left Bat", text: "Two people walk into a pie shop. Neither checks the ceiling. Typical." },
+  { speaker: "Middle Bat", text: "They looked sharper through the window." },
+  { speaker: "Right Bat", text: "That was your quiet walk? The floor filed a complaint." },
+  { speaker: "Left Bat", text: "We voted. Your shoes are the scariest thing in here." }
+];
+
 const actions = {
   streetUtility: function () {
     setLine("Mumi", "New lock, old box. The cable runs downhill.");
@@ -723,6 +835,7 @@ const actions = {
 
   bridgePath: function () { goToScene("riverside"); },
   pizzeriaDoor: enterPizzeria,
+  marketPath: function () { goToScene("market"); },
 
   riversideBack: function () { goToScene("street"); },
 
@@ -770,6 +883,68 @@ const actions = {
       return;
     }
     setLine("Mumi", "The lock is gone, but one swollen plank is holding the door shut.");
+  },
+
+  marketBack: function () { goToScene("street"); },
+
+  piperWindows: function () {
+    setLine("Billi", "Every pie in the window has a little pastry leaf on top.");
+  },
+
+  piperSign: function () {
+    setLine("Mumi", "Pie'd Piper. The apostrophe is doing a lot of work.");
+  },
+
+  piperDoor: enterPiedPiper,
+
+  marketPumpkins: function () {
+    setLine("Billi", "Three friendly faces and one that has clearly seen the invoices.");
+  },
+
+  piperExit: function () { goToScene("market"); },
+
+  piperBats: function () {
+    if (state.flags.batFed) {
+      setLine("Middle Bat", "We take back one thing we said about your shoes. Not which thing.");
+      return;
+    }
+    const remark = batRemarks[batRemarkIndex % batRemarks.length];
+    batRemarkIndex += 1;
+    setLine(remark.speaker, remark.text);
+  },
+
+  piperDecorations: function () {
+    setLine("Nora", "I put up one garland in 1989. It has been multiplying ever since.");
+  },
+
+  witchBrew: function () {
+    setLine("Nora", "Spiced apple punch. The pot only looks guilty.");
+  },
+
+  punchCups: function () {
+    state.flags.cupTaken = true;
+    addItem("punchCup");
+    refreshState();
+    setLine("Nora", "Take a cup. That is what the cups are conducting themselves for.");
+  },
+
+  cookiePlate: function () {
+    state.flags.cookieTaken = true;
+    addItem("pumpkinCookie");
+    refreshState();
+    setLine("Nora", "Take one. The bats cannot reach the table and resent architecture.");
+  },
+
+  pieCase: function () {
+    setLine("Mumi", "Apple, pumpkin, pecan, and one labeled only with a question mark.");
+  },
+
+  nora: function () {
+    if (state.flags.batFed) {
+      setLine("Nora", "You fed them. Now they will complain about crumbs until Christmas.");
+      return;
+    }
+    setLine("Nora", "Do not mind the bats. They were marked down after Halloween of 1987.");
   },
 
   pizzeriaExit: function () { goToScene("street"); },
@@ -1019,6 +1194,42 @@ const itemUses = {
         { speaker: "Mumi", text: "And the stone is moving." }
       ], enterChamber);
     }
+  },
+  pumpkinCookie: {
+    piperBats: function () {
+      removeItem("pumpkinCookie");
+      state.flags.batFed = true;
+      refreshState();
+      playDialogue([
+        { speaker: "Right Bat", text: "At last. Tribute." },
+        { speaker: "Billi", text: "It is half a cookie." },
+        { speaker: "Left Bat", text: "At last. Measured tribute." }
+      ]);
+    }
+  },
+  punchCup: {
+    witchBrew: function () {
+      removeItem("punchCup");
+      addItem("spicedPunch");
+      state.flags.punchFilled = true;
+      refreshState();
+      playDialogue([
+        { speaker: "Nora", text: "One scoop. It is punch, not a municipal resource." },
+        { speaker: "Mumi", text: "It smells like an apple pie learned to swim." }
+      ]);
+    }
+  },
+  spicedPunch: {
+    enzo: function () {
+      removeItem("spicedPunch");
+      state.flags.enzoHadPunch = true;
+      refreshState();
+      playDialogue([
+        { speaker: "Enzo", text: "Nora's punch. Cinnamon, clove, and a formal warning from the dentist." },
+        { speaker: "Billi", text: "She said one scoop." },
+        { speaker: "Enzo", text: "Nora has always confused hospitality with enforcement." }
+      ]);
+    }
   }
 };
 
@@ -1062,10 +1273,12 @@ function runInteraction(hotspot) {
 
 function preloadNextScenes(scene) {
   const sceneOrder = {
-    street: ["riverside", "pizzeria"],
+    street: ["riverside", "pizzeria", "market"],
     riverside: ["street", "bridge"],
     bridge: ["riverside", "pizzeria", "pumphouse"],
-    pizzeria: ["street", "backroom"],
+    pizzeria: ["street", "backroom", "market"],
+    market: ["street", "piedPiper"],
+    piedPiper: ["market", "pizzeria"],
     backroom: ["pizzeria", "bridge"],
     pumphouse: ["bridge", "vestibule"],
     vestibule: ["pumphouse", "chamber"],

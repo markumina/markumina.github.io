@@ -123,7 +123,7 @@ a:focus-visible {
 
 .game-stage {
   position: relative;
-  width: min(100%, calc((100dvh - 84px) * 1.5), 1152px);
+  width: min(100%, calc((100dvh - 84px) * 1.5), 1536px);
   aspect-ratio: 3 / 2;
   overflow: hidden;
   background: #071117;
@@ -167,6 +167,31 @@ a:focus-visible {
   image-rendering: pixelated;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.scene-decorations {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-decoration {
+  position: absolute;
+  display: block;
+  object-fit: contain;
+  image-rendering: pixelated;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.scene-decoration--warm {
+  filter: drop-shadow(0 0 3px rgba(226, 112, 27, 0.48));
+}
+
+.scene-decoration--sign {
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.7));
 }
 
 .walkers {
