@@ -243,6 +243,10 @@ a:focus-visible {
   background-image: url("assets/billi-walk.svg");
 }
 
+.walker--billi.has-bracelet .walker-sprite {
+  background-image: url("assets/billi-walk-bracelet.svg");
+}
+
 .walker--mumi .walker-sprite {
   background-image: url("assets/mumi-walk.svg");
 }

@@ -1,65 +1,61 @@
 const SAVE_KEY = "nothing-save-v1";
+const SCRIPT = window.NOTHING_DIALOGUE;
 
 const itemDetails = {
   deliveryTag: {
     label: "delivery tag",
-    speaker: "Billi",
-    held: "The old Bellini's delivery tag. Nunzio should see it.",
-    description: "Rain-softened paper from a delivery made to the pump station in 1978."
+    held: SCRIPT.items.deliveryTag.held,
+    description: SCRIPT.items.deliveryTag.description
   },
   brassToken: {
     label: "brass token",
-    speaker: "Mumi",
-    held: "The token with the triangular notch. It must fit somewhere.",
-    description: "A heavy brass token marked with a small triangle."
+    held: SCRIPT.items.brassToken.held,
+    description: SCRIPT.items.brassToken.description
   },
   pryBar: {
     label: "pry bar",
-    speaker: "Mumi",
-    held: "The short pry bar. Good for one stubborn piece of wood.",
-    description: "Old iron, short enough to carry, and still solid."
+    held: SCRIPT.items.pryBar.held,
+    description: SCRIPT.items.pryBar.description
   },
   ceramicFuse: {
     label: "ceramic fuse",
-    speaker: "Billi",
-    held: "The fuse. There was an empty socket in Nunzio's back room.",
-    description: "A white ceramic fuse from a box of old electrical parts."
+    held: SCRIPT.items.ceramicFuse.held,
+    description: SCRIPT.items.ceramicFuse.description
   },
   amberLens: {
     label: "amber lens",
-    speaker: "Billi",
-    held: "The amber lens. It looks older than the cabinet it was locked in.",
-    description: "A thick amber survey lens in a brass ring."
+    held: SCRIPT.items.amberLens.held,
+    description: SCRIPT.items.amberLens.description
   },
   pumpkinCookie: {
     label: "pumpkin cookie",
-    speaker: "Billi",
-    held: "A pumpkin-shaped cookie. One of the bats keeps staring at it.",
-    description: "Ginger, molasses, and a face considerably happier than the bats."
+    held: SCRIPT.items.pumpkinCookie.held,
+    description: SCRIPT.items.pumpkinCookie.description
   },
   punchCup: {
     label: "paper cup",
-    speaker: "Mumi",
-    held: "An empty paper cup from Nora's tasting table.",
-    description: "Orange paper, black stars, and no cider yet."
+    held: SCRIPT.items.punchCup.held,
+    description: SCRIPT.items.punchCup.description
   },
   spicedPunch: {
     label: "spiced cider",
-    speaker: "Billi",
-    held: "A warm cup of Nora's spiced apple cider.",
-    description: "Apple, cinnamon, orange peel, and a suspicious amount of clove."
+    held: SCRIPT.items.spicedPunch.held,
+    description: SCRIPT.items.spicedPunch.description
   },
   nightPerfume: {
     label: "Perfume of the Night",
-    speaker: "Billi",
-    held: "Nora's little amber bottle of Perfume of the Night.",
-    description: "A few sprays made from pumpkin essential oil, cedar, and clove."
+    held: SCRIPT.items.nightPerfume.held,
+    description: SCRIPT.items.nightPerfume.description
   },
   sparkPlugWire: {
     label: "spark plug wire",
-    speaker: "Mumi",
-    held: "The red spark plug wire from the car graveyard. Old, flexible, and still tough.",
-    description: "A long red ignition lead with sound insulation and a metal terminal at each end."
+    held: SCRIPT.items.sparkPlugWire.held,
+    description: SCRIPT.items.sparkPlugWire.description
+  },
+  wrappedPizza: {
+    label: "wrapped pizza",
+    held: SCRIPT.items.wrappedPizza.held,
+    description: SCRIPT.items.wrappedPizza.description
   }
 };
 
@@ -169,15 +165,15 @@ const sceneDefinitions = {
   },
   pizzeria: {
     image: "assets/scene-pizzeria.png",
-    alt: "A modest family pizzeria with Nunzio behind the counter",
+    alt: "A modest family pizzeria with Bruno behind the counter",
     location: "Bellini's Pizza",
     start: [20, 87],
     walk: { minX: 6, maxX: 94, minY: 67, maxY: 92 },
     hotspots: [
       { action: "pizzeriaExit", label: "Willow Street", left: 14, top: 72, width: 20, height: 20, walk: [20, 91], kind: "exit", arrow: "down-left", arrowX: 50, arrowY: 80 },
       { action: "townPhotos", label: "old town photographs", left: 5, top: 13, width: 31, height: 30, walk: [28, 73] },
-      { action: "pizzaCounter", label: "pizza counter", left: 37, top: 38, width: 49, height: 28, walk: [58, 72] },
-      { action: "enzo", label: "Nunzio Bellini", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
+      { action: "pizzaCounter", label: "pizza slices", left: 43, top: 39, width: 24, height: 17, walk: [58, 72] },
+      { action: "bruno", label: "Bruno", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
       { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit", arrow: "right" }
     ]
   },
@@ -381,6 +377,9 @@ function freshState() {
       deliveryTagFound: false,
       tokenFound: false,
       pizzeriaVisited: false,
+      brunoOfferHeard: false,
+      pizzaTaken: false,
+      braceletWorn: false,
       piperVisited: false,
       nightPerfumeGiven: false,
       carHoodOpen: false,
@@ -425,13 +424,19 @@ function loadState() {
       : [];
     const selectedItem = savedInventory.includes(saved.selectedItem) ? saved.selectedItem : null;
 
+    const flags = { ...clean.flags, ...(saved.flags || {}) };
+    const inventory = [...new Set(savedInventory)];
+    if (flags.pizzaTaken && !flags.braceletWorn && !inventory.includes("wrappedPizza")) {
+      inventory.push("wrappedPizza");
+    }
+
     return {
       ...clean,
       ...saved,
       scene: scene,
-      inventory: [...new Set(savedInventory)],
+      inventory: inventory,
       selectedItem: selectedItem,
-      flags: { ...clean.flags, ...(saved.flags || {}) }
+      flags: flags
     };
   } catch {
     return clean;
@@ -442,6 +447,8 @@ let state = loadState();
 let activeDialogue = null;
 let dialogueIndex = 0;
 let dialogueDone = null;
+let delayedDialogueTimer = null;
+let pizzaWrapTimer = null;
 let walkRequest = 0;
 let batRemarkIndex = 0;
 let positions = {
@@ -494,8 +501,35 @@ function removeItem(item) {
   if (state.selectedItem === item) state.selectedItem = null;
 }
 
-function setLine(name, text) {
-  playDialogue([{ speaker: name, text: text }]);
+function playLine(line) {
+  playDialogue([line]);
+}
+
+function clearDelayedDialogue() {
+  if (delayedDialogueTimer === null) return;
+  window.clearTimeout(delayedDialogueTimer);
+  delayedDialogueTimer = null;
+}
+
+function scheduleDialogue(lines, delay, onShow) {
+  clearDelayedDialogue();
+  const scene = state.scene;
+
+  function showWhenReady() {
+    if (state.scene !== scene) {
+      delayedDialogueTimer = null;
+      return;
+    }
+    if (activeDialogue) {
+      delayedDialogueTimer = window.setTimeout(showWhenReady, 250);
+      return;
+    }
+    delayedDialogueTimer = null;
+    if (onShow) onShow();
+    playDialogue(lines);
+  }
+
+  delayedDialogueTimer = window.setTimeout(showWhenReady, delay);
 }
 
 function showDialogueLine() {
@@ -539,14 +573,14 @@ function selectItem(item) {
     state.selectedItem = null;
     saveState();
     renderInventory();
-    setLine(itemDetails[item].speaker, itemDetails[item].description);
+    playLine(itemDetails[item].description);
     return;
   }
 
   state.selectedItem = item;
   saveState();
   renderInventory();
-  setLine(itemDetails[item].speaker, itemDetails[item].held);
+  playLine(itemDetails[item].held);
 }
 
 function renderInventory() {
@@ -569,7 +603,7 @@ function renderInventory() {
       button.addEventListener("click", function () { selectItem(item); });
       button.addEventListener("contextmenu", function (event) {
         event.preventDefault();
-        setLine(details.speaker, details.description);
+        playLine(details.description);
       });
       inventory.append(button);
     });
@@ -689,6 +723,7 @@ function placeWalker(element, position) {
 }
 
 function renderWalkers() {
+  billi.classList.toggle("has-bracelet", state.flags.braceletWorn);
   placeWalker(billi, positions.billi);
   placeWalker(mumi, positions.mumi);
 }
@@ -797,7 +832,7 @@ function renderScene(resetCharacters) {
     sceneImage.addEventListener("load", function () { sceneLoader.hidden = true; }, { once: true });
     sceneImage.addEventListener("error", function () {
       sceneLoader.hidden = true;
-      setLine("System", "The scene could not be opened.");
+      playLine(SCRIPT.system.sceneLoadError);
     }, { once: true });
     sceneImage.src = imageSource;
   } else if (sceneImage.complete) {
@@ -818,17 +853,20 @@ function refreshState() {
   renderScenePatches(sceneValue(sceneDefinitions[state.scene].image));
   renderSceneDecorations();
   renderInventory();
+  renderWalkers();
 }
 
-function goToScene(scene, lines) {
+function goToScene(scene, lines, onDone) {
+  clearDelayedDialogue();
   state.scene = scene;
   state.selectedItem = null;
   saveState();
   renderScene(true);
   if (lines && lines.length) {
-    playDialogue(lines);
+    playDialogue(lines, onDone);
   } else {
     hideDialogue();
+    if (onDone) onDone();
   }
   preloadNextScenes(scene);
 }
@@ -836,69 +874,51 @@ function goToScene(scene, lines) {
 function enterBridge() {
   const firstVisit = !state.flags.bridgeVisited;
   state.flags.bridgeVisited = true;
-  goToScene("bridge", firstVisit ? [
-    { speaker: "Billi", text: "The fireflies came all the way down here." },
-    { speaker: "Mumi", text: "That pump building is not on the town map." }
-  ] : null);
+  goToScene("bridge", firstVisit ? SCRIPT.bridge.firstVisit : null);
+}
+
+function queueBrunoOffer() {
+  if (state.flags.brunoOfferHeard || state.flags.pizzaTaken) return;
+  scheduleDialogue(SCRIPT.pizzeria.bruno.lateOffer, 15000, function () {
+    state.flags.brunoOfferHeard = true;
+    saveState();
+  });
 }
 
 function enterPizzeria() {
   const firstVisit = !state.flags.pizzeriaVisited;
   state.flags.pizzeriaVisited = true;
-  goToScene("pizzeria", firstVisit ? [
-    { speaker: "Nunzio", text: "Ayyy! How'sa u mutha and fatha?" },
-    { speaker: "Nunzio", text: "U looka too skinny. Eat somethin!" },
-    { speaker: "Nunzio", text: "Hey, wanna the fries and a coupla piece a pizza?" },
-    { speaker: "Nunzio", text: "U gotta hurry up becuza ima closa in a few minute." }
-  ] : null);
+  goToScene("pizzeria", firstVisit ? SCRIPT.pizzeria.firstVisit : null, queueBrunoOffer);
 }
 
 function enterPiedPiper() {
   const firstVisit = !state.flags.piperVisited;
   state.flags.piperVisited = true;
-  goToScene("piedPiper", firstVisit ? [
-    { speaker: "Nora", text: "Well, look what the moon dragged in. Come warm up. The cider's behaving, mostly." },
-    { speaker: "Billi", text: "We're just looking." },
-    { speaker: "Nora", text: "Everybody says that. Then the pie gets involved." },
-    { speaker: "Left Bat", text: "Her sales pitch has casualties." }
-  ] : null);
+  goToScene("piedPiper", firstVisit ? SCRIPT.pieShop.firstVisit : null);
 }
 
 function enterBackroom() {
   const firstVisit = !state.flags.backroomVisited;
   state.flags.backroomVisited = true;
-  goToScene("backroom", firstVisit ? [
-    { speaker: "Nunzio", text: "My father saved everything except useful shelf space." },
-    { speaker: "Mumi", text: "These are plans for the bridge." },
-    { speaker: "Nunzio", text: "And the old pump room under it. Take what helps." }
-  ] : null);
+  goToScene("backroom", firstVisit ? SCRIPT.backroom.firstVisit : null);
 }
 
 function enterPumphouse() {
   const firstVisit = !state.flags.pumphouseVisited;
   state.flags.pumphouseVisited = true;
-  goToScene("pumphouse", firstVisit ? [
-    { speaker: "Billi", text: "It smells like river water and old pennies." },
-    { speaker: "Mumi", text: "The fireflies got in before we did." }
-  ] : null);
+  goToScene("pumphouse", firstVisit ? SCRIPT.pumpStation.firstVisit : null);
 }
 
 function enterVestibule() {
   const firstVisit = !state.flags.vestibuleVisited;
   state.flags.vestibuleVisited = true;
-  goToScene("vestibule", firstVisit ? [
-    { speaker: "Mumi", text: "This is not part of the pump station." },
-    { speaker: "Billi", text: "No. The pump station is sitting on top of it." }
-  ] : null);
+  goToScene("vestibule", firstVisit ? SCRIPT.vestibule.firstVisit : null);
 }
 
 function enterChamber() {
   const firstVisit = !state.flags.chamberVisited;
   state.flags.chamberVisited = true;
-  goToScene("chamber", firstVisit ? [
-    { speaker: "Billi", text: "This is not a basement." },
-    { speaker: "Mumi", text: "Basements usually have ceilings." }
-  ] : null);
+  goToScene("chamber", firstVisit ? SCRIPT.chamber.firstVisit : null);
 }
 
 function enterCosmos() {
@@ -906,12 +926,7 @@ function enterCosmos() {
   state.selectedItem = null;
   saveState();
   renderScene(true);
-  playDialogue([
-    { speaker: "Billi", text: "Mumi." },
-    { speaker: "Mumi", text: "I know." },
-    { speaker: "Billi", text: "There is no down." },
-    { speaker: "Mumi", text: "Then don't let go." }
-  ], function () {
+  playDialogue(SCRIPT.cosmos.ending, function () {
     state.flags.ended = true;
     saveState();
     endingPanel.hidden = false;
@@ -919,20 +934,13 @@ function enterCosmos() {
   });
 }
 
-const batRemarks = [
-  { speaker: "Left Bat", text: "Two people walk into a pie shop. Neither checks the ceiling. Typical." },
-  { speaker: "Middle Bat", text: "They looked sharper through the window." },
-  { speaker: "Right Bat", text: "That was your quiet walk? The floor filed a complaint." },
-  { speaker: "Left Bat", text: "We voted. Your shoes are the scariest thing in here." }
-];
-
 const actions = {
   streetUtility: function () {
-    setLine("Mumi", "New lock, old box. The cable runs downhill.");
+    playLine(SCRIPT.willowStreet.utilityBox);
   },
 
   riverStone: function () {
-    setLine("Billi", "Just a cold round stone. It can stay here.");
+    playLine(SCRIPT.willowStreet.riverStone);
   },
 
   bridgePath: function () { goToScene("riverside"); },
@@ -944,36 +952,36 @@ const actions = {
   lowerWillowForward: function () { goToScene("woodline"); },
 
   lastPorch: function () {
-    setLine("Billi", "A paper pumpkin turning under the porch light. Someone still changes that bulb.");
+    playLine(SCRIPT.lowerWillow.porch);
   },
 
   shutteredShop: function () {
-    setLine("Mumi", "The lettering is gone. The shelves are still in there.");
+    playLine(SCRIPT.lowerWillow.shutteredShop);
   },
 
   vacantLot: function () {
-    setLine("Billi", "Old tire tracks cut through the weeds and keep going downhill.");
+    playLine(SCRIPT.lowerWillow.vacantLot);
   },
 
   woodlineBack: function () { goToScene("lowerWillow"); },
   woodlineForward: function () { goToScene("carGraveyard"); },
 
   lastStreetlight: function () {
-    setLine("Mumi", "Last bulb on the line. The wire stops here, but the tire tracks do not.");
+    playLine(SCRIPT.woodline.streetlight);
   },
 
   woodlandChain: function () {
-    setLine("Billi", "Someone dropped the chain years ago and kept driving through.");
+    playLine(SCRIPT.woodline.chain);
   },
 
   graveyardBack: function () { goToScene("woodline"); },
 
   ninetiesSedan: function () {
-    setLine("Mumi", "Early nineties. It looks like every school parking lot at once.");
+    playLine(SCRIPT.carGraveyard.sedan);
   },
 
   olderCarShell: function () {
-    setLine("Billi", "The trees have been here long enough to grow around the bumper.");
+    playLine(SCRIPT.carGraveyard.olderShell);
   },
 
   muscleCarHood: function () {
@@ -981,18 +989,18 @@ const actions = {
       state.flags.carHoodOpen = true;
       saveState();
       renderScene(false);
-      setLine("Mumi", "The hinges complain, but the hood stays up.");
+      playLine(SCRIPT.carGraveyard.hoodOpened);
       return;
     }
     if (!state.flags.sparkPlugWireFound) {
-      setLine("Billi", "Most of the wiring is brittle. One red ignition lead still bends.");
+      playLine(SCRIPT.carGraveyard.wireVisible);
       return;
     }
-    setLine("Mumi", "Nothing else in the engine bay wants to come quietly.");
+    playLine(SCRIPT.carGraveyard.hoodEmpty);
   },
 
   missingWheel: function () {
-    setLine("Billi", "One wheel off, two blocks under it, and twenty years of leaves.");
+    playLine(SCRIPT.carGraveyard.missingWheel);
   },
 
   sparkPlugWire: function () {
@@ -1000,17 +1008,17 @@ const actions = {
     addItem("sparkPlugWire");
     saveState();
     renderScene(false);
-    setLine("Mumi", "A red spark plug wire. Old, but the insulation still flexes.");
+    playLine(SCRIPT.carGraveyard.wireTaken);
   },
 
   riversideBack: function () { goToScene("street"); },
 
   riversideLamp: function () {
-    setLine("Mumi", "The bulb is warm. Someone still maintains this path.");
+    playLine(SCRIPT.riverside.lamp);
   },
 
   riversideRiver: function () {
-    setLine("Billi", "The river is almost black from here.");
+    playLine(SCRIPT.riverside.river);
   },
 
   riversideForward: enterBridge,
@@ -1018,29 +1026,29 @@ const actions = {
   bridgeBack: function () { goToScene("riverside"); },
 
   bridgeRiver: function () {
-    setLine("Billi", "The current and the reflected lights are moving in opposite directions.");
+    playLine(SCRIPT.bridge.river);
   },
 
   stormDrain: function () {
     if (state.flags.tokenFound) {
-      setLine("Mumi", "Nothing else in the drain but rainwater.");
+      playLine(SCRIPT.bridge.emptyDrain);
       return;
     }
     state.flags.tokenFound = true;
     addItem("brassToken");
     refreshState();
-    setLine("Mumi", "A brass token was caught in the grate. It has a triangular notch.");
+    playLine(SCRIPT.bridge.tokenFound);
   },
 
   deliveryTag: function () {
     if (state.flags.deliveryTagFound) {
-      setLine("Billi", "Only a clean patch of dust remains by the step.");
+      playLine(SCRIPT.bridge.tagGone);
       return;
     }
     state.flags.deliveryTagFound = true;
     addItem("deliveryTag");
     refreshState();
-    setLine("Billi", "An old Bellini's delivery tag. The destination says pump station.");
+    playLine(SCRIPT.bridge.tagFound);
   },
 
   pumpDoor: function () {
@@ -1048,61 +1056,62 @@ const actions = {
       enterPumphouse();
       return;
     }
-    setLine("Mumi", "The lock is gone, but one swollen plank is holding the door shut.");
+    playLine(SCRIPT.bridge.pumpDoorLocked);
   },
 
   marketBack: function () { goToScene("street"); },
 
   piperWindows: function () {
-    setLine("Billi", "Every pie in the window has a little pastry leaf on top.");
+    playLine(SCRIPT.market.windows);
   },
 
   piperSign: function () {
-    setLine("Mumi", "Pie or Die. Seasonal rebranding with a threat.");
+    playLine(SCRIPT.market.sign);
   },
 
   piperDoor: enterPiedPiper,
 
   marketPumpkins: function () {
-    setLine("Billi", "Three friendly faces and one that has clearly seen the invoices.");
+    playLine(SCRIPT.market.pumpkins);
   },
 
   piperExit: function () { goToScene("market"); },
 
   piperBats: function () {
     if (state.flags.batFed) {
-      setLine("Middle Bat", "We take back one thing we said about your shoes. Not which thing.");
+      playLine(SCRIPT.pieShop.batsAfterCookie);
       return;
     }
-    const remark = batRemarks[batRemarkIndex % batRemarks.length];
+    const remarks = SCRIPT.pieShop.batRemarks;
+    const remark = remarks[batRemarkIndex % remarks.length];
     batRemarkIndex += 1;
-    setLine(remark.speaker, remark.text);
+    playLine(remark);
   },
 
   piperDecorations: function () {
-    setLine("Nora", "I put up one garland in 1989. It has been multiplying ever since.");
+    playLine(SCRIPT.pieShop.decorations);
   },
 
   witchBrew: function () {
-    setLine("Nora", "Spiced apple cider. The pot only looks guilty.");
+    playLine(SCRIPT.pieShop.ciderPot);
   },
 
   punchCups: function () {
     state.flags.cupTaken = true;
     addItem("punchCup");
     refreshState();
-    setLine("Nora", "Take a cup. That is what the cups are conducting themselves for.");
+    playLine(SCRIPT.pieShop.cupTaken);
   },
 
   cookiePlate: function () {
     state.flags.cookieTaken = true;
     addItem("pumpkinCookie");
     refreshState();
-    setLine("Nora", "Take one. The bats cannot reach the table and resent architecture.");
+    playLine(SCRIPT.pieShop.cookieTaken);
   },
 
   pieCase: function () {
-    setLine("Mumi", "Apple, pumpkin, pecan, and one labeled only with a question mark.");
+    playLine(SCRIPT.pieShop.pieCase);
   },
 
   nora: function () {
@@ -1110,43 +1119,57 @@ const actions = {
       state.flags.nightPerfumeGiven = true;
       addItem("nightPerfume");
       refreshState();
-      playDialogue([
-        { speaker: "Nora", text: "Before you go, take this. Perfume of the Night." },
-        { speaker: "Billi", text: "It smells like pumpkin." },
-        { speaker: "Nora", text: "Pumpkin oil, cedar, and clove. We make one little batch every Halloween." },
-        { speaker: "Mumi", text: "Perfume or potion?" },
-        { speaker: "Nora", text: "Two sprays, perfume. Three sprays, depends who's asking." }
-      ]);
+      playDialogue(SCRIPT.pieShop.perfumeGift);
       return;
     }
     if (state.flags.batFed) {
-      setLine("Nora", "You fed them. Now they will complain about crumbs until Christmas.");
+      playLine(SCRIPT.pieShop.afterBatCookie);
       return;
     }
-    setLine("Nora", "Do not mind the bats. They were marked down after Halloween of 1987.");
+    playLine(SCRIPT.pieShop.noraRepeat);
   },
 
   pizzeriaExit: function () { goToScene("street"); },
 
   townPhotos: function () {
-    setLine("Billi", "One photograph shows Nunzio's father carrying pizza boxes under the bridge.");
+    playLine(SCRIPT.pizzeria.photographs);
   },
 
   pizzaCounter: function () {
-    setLine("Mumi", "Two slices left. Finally, a problem with an obvious answer.");
-  },
-
-  enzo: function () {
-    if (state.flags.enzoTrusts) {
-      setLine("Nunzio", "The back room is open. Mind the flour sacks.");
+    if (state.flags.pizzaTaken) {
+      playLine(SCRIPT.pizzeria.bruno.pizzaGone);
       return;
     }
-    setLine("Nunzio", "My father used to make deliveries under that bridge. Long time ago.");
+
+    clearDelayedDialogue();
+    state.flags.brunoOfferHeard = true;
+    state.flags.pizzaTaken = true;
+    saveState();
+    playDialogue([SCRIPT.pizzeria.bruno.wrappingPizza], function () {
+      if (pizzaWrapTimer !== null) window.clearTimeout(pizzaWrapTimer);
+      pizzaWrapTimer = window.setTimeout(function () {
+        pizzaWrapTimer = null;
+        if (!state.flags.pizzaTaken || state.flags.braceletWorn || hasItem("wrappedPizza")) return;
+        addItem("wrappedPizza");
+        refreshState();
+        if (state.scene === "pizzeria" && !activeDialogue) {
+          playLine(SCRIPT.pizzeria.bruno.pizzaReady);
+        }
+      }, 1500);
+    });
+  },
+
+  bruno: function () {
+    if (state.flags.enzoTrusts) {
+      playLine(SCRIPT.pizzeria.bruno.trusted);
+      return;
+    }
+    playDialogue(SCRIPT.pizzeria.bruno.deliveryStory);
   },
 
   backroomDoor: function () {
     if (!state.flags.enzoTrusts) {
-      setLine("Nunzio", "Family storage. What did you find under the bridge?");
+      playLine(SCRIPT.pizzeria.bruno.backroomRefusal);
       return;
     }
     enterBackroom();
@@ -1156,74 +1179,68 @@ const actions = {
 
   pryBar: function () {
     if (state.flags.pryBarFound) {
-      setLine("Mumi", "A clean line in the dust marks where the pry bar was.");
+      playLine(SCRIPT.backroom.pryBarGone);
       return;
     }
     state.flags.pryBarFound = true;
     addItem("pryBar");
     refreshState();
-    setLine("Mumi", "A short iron pry bar. Not elegant, but neither is that boarded door.");
+    playLine(SCRIPT.backroom.pryBarTaken);
   },
 
   oldPlans: function () {
-    setLine("Billi", "The bridge plans show a pump room. The sheet ends where the floor should be.");
+    playLine(SCRIPT.backroom.plans);
   },
 
   ceramicFuse: function () {
     if (state.flags.fuseFound || state.flags.fuseInstalled) {
-      setLine("Billi", "The workbench is mostly tomato tins now.");
+      playLine(SCRIPT.backroom.fuseGone);
       return;
     }
     state.flags.fuseFound = true;
     addItem("ceramicFuse");
     refreshState();
-    setLine("Billi", "A ceramic fuse. It is the same size as the empty socket on the wall.");
+    playLine(SCRIPT.backroom.fuseTaken);
   },
 
   fuseBox: function () {
     if (state.flags.fuseInstalled) {
-      setLine("Mumi", "The cabinet circuit is live again.");
+      playLine(SCRIPT.backroom.fuseInstalled);
       return;
     }
-    setLine("Billi", "The right-hand socket is empty.");
+    playLine(SCRIPT.backroom.fuseMissing);
   },
 
   cameraCabinet: function () {
     if (state.flags.lensTaken) {
-      setLine("Billi", "Only ordinary camera parts remain.");
+      playLine(SCRIPT.backroom.cabinetEmpty);
       return;
     }
     if (!state.flags.fuseInstalled) {
-      setLine("Mumi", "The electric catch is dead. The wall box is missing a fuse.");
+      playLine(SCRIPT.backroom.cabinetUnpowered);
       return;
     }
     state.flags.lensTaken = true;
     addItem("amberLens");
     refreshState();
-    playDialogue([
-      { speaker: "Billi", text: "An amber survey lens." },
-      { speaker: "Nunzio", text: "My father said it showed things that ordinary glass missed." }
-    ]);
+    playDialogue(SCRIPT.backroom.lensFound);
   },
 
   pumpExit: function () { goToScene("bridge"); },
 
   workbench: function () {
-    setLine("Mumi", "Every maintenance log after 1978 was removed.");
+    playLine(SCRIPT.pumpStation.workbench);
   },
 
   oldPump: function () {
-    setLine("Billi", "The pump casing has the same triangular mark as the token.");
+    playLine(SCRIPT.pumpStation.pump);
   },
 
   coveredFloor: function () {
     state.flags.hatchRevealed = true;
     saveState();
     renderScene(false);
-    playDialogue([
-      { speaker: "Billi", text: "Help me move the crate." },
-      { speaker: "Mumi", text: "That hatch was hidden, not forgotten." }
-    ]);
+    playDialogue(SCRIPT.pumpStation.crateMoved);
   },
 
   hiddenHatch: function () {
@@ -1231,17 +1248,17 @@ const actions = {
       enterVestibule();
       return;
     }
-    setLine("Mumi", "A triangular slot. Nothing on a municipal key ring would fit it.");
+    playLine(SCRIPT.pumpStation.hatchLocked);
   },
 
   vestibuleExit: function () { goToScene("pumphouse"); },
 
   mural: function () {
-    setLine("Billi", "An amber eye opens the circle. That is all the mosaic says.");
+    playLine(SCRIPT.vestibule.mural);
   },
 
   pedestal: function () {
-    setLine("Mumi", "No inscription. Just a ring of scratches around the empty top.");
+    playLine(SCRIPT.vestibule.pedestal);
   },
 
   barrier: function () {
@@ -1249,62 +1266,59 @@ const actions = {
       enterChamber();
       return;
     }
-    setLine("Billi", "The socket in the center is the size of a camera lens.");
+    playLine(SCRIPT.vestibule.barrierLocked);
   },
 
   chamberExit: function () { goToScene("vestibule"); },
 
   starDial: function () {
     if (state.flags.starDialSet) {
-      setLine("Billi", "The brass dial is pointing at the broken constellation.");
+      playLine(SCRIPT.chamber.starAlreadySet);
       return;
     }
     state.flags.starDialSet = true;
     refreshState();
-    setLine("Billi", "The dial stops at the missing star. Its brass contact swings toward the ring, then springs back.");
+    playLine(SCRIPT.chamber.starSet);
   },
 
   retainingEyes: function () {
     if (state.flags.portalLeadTied) {
-      setLine("Mumi", "The red ignition lead is holding both brass eyes together.");
+      playLine(SCRIPT.chamber.contactTied);
       return;
     }
-    setLine("Mumi", "One brass eye is on the dial and one is on the ring. They need to be held together.");
+    playLine(SCRIPT.chamber.contactLoose);
   },
 
   riverDial: function () {
     if (state.flags.riverDialSet) {
-      setLine("Mumi", "The floor dial will not turn any farther.");
+      playLine(SCRIPT.chamber.riverAlreadySet);
       return;
     }
     state.flags.riverDialSet = true;
     refreshState();
-    setLine("Mumi", "The dial turns once. Water moves somewhere behind the wall.");
+    playLine(SCRIPT.chamber.riverSet);
   },
 
   portal: function () {
     if (!state.flags.starDialSet && !state.flags.riverDialSet) {
-      setLine("Billi", "The ring is connected to both mechanisms in the room.");
+      playLine(SCRIPT.chamber.portalDormant);
       return;
     }
     if (!state.flags.starDialSet) {
-      setLine("Mumi", "The floor is set. The brass star dial is not.");
+      playLine(SCRIPT.chamber.starMissing);
       return;
     }
     if (!state.flags.riverDialSet) {
-      setLine("Billi", "The stars are set. The round floor dial is not.");
+      playLine(SCRIPT.chamber.riverMissing);
       return;
     }
     if (!state.flags.portalLeadTied) {
-      setLine("Mumi", "Both dials are set, but the loose brass contact keeps springing away from the ring.");
+      playLine(SCRIPT.chamber.wireMissing);
       return;
     }
     state.flags.portalOpen = true;
     saveState();
-    playDialogue([
-      { speaker: "Billi", text: "The wall inside the ring is gone." },
-      { speaker: "Mumi", text: "The floor is going with it." }
-    ], enterCosmos);
+    playDialogue(SCRIPT.chamber.portalOpening, enterCosmos);
   }
 };
 
@@ -1312,25 +1326,20 @@ function tiePortalContact() {
   removeItem("sparkPlugWire");
   state.flags.portalLeadTied = true;
   refreshState();
-  setLine("Mumi", "The spark plug wire holds the dial's brass contact against the ring.");
+  playLine(SCRIPT.chamber.wireUsed);
 }
 
 const itemUses = {
   deliveryTag: {
-    enzo: function () {
+    bruno: function () {
       if (state.flags.enzoTrusts) {
-        setLine("Nunzio", "Keep it. My father would have liked that.");
+        playLine(SCRIPT.pizzeria.bruno.tagAlreadyGiven);
         return;
       }
       removeItem("deliveryTag");
       state.flags.enzoTrusts = true;
       refreshState();
-      playDialogue([
-        { speaker: "Nunzio", text: "Where did you find this?" },
-        { speaker: "Billi", text: "At the pump-building door." },
-        { speaker: "Nunzio", text: "My father delivered to the night crew. Then one winter the orders stopped." },
-        { speaker: "Nunzio", text: "His bridge things are in the back room. Go look." }
-      ]);
+      playDialogue(SCRIPT.pizzeria.bruno.tagConversation);
     }
   },
   pryBar: {
@@ -1342,25 +1351,19 @@ const itemUses = {
       removeItem("pryBar");
       state.flags.pumpDoorOpen = true;
       refreshState();
-      playDialogue([
-        { speaker: "Mumi", text: "The plank is moving." },
-        { speaker: "Billi", text: "Quietly was never an option." }
-      ], enterPumphouse);
+      playDialogue(SCRIPT.backroom.pryBarUsed, enterPumphouse);
     }
   },
   ceramicFuse: {
     fuseBox: function () {
       if (state.flags.fuseInstalled) {
-        setLine("Mumi", "The fuse is already in place.");
+        playLine(SCRIPT.backroom.fuseAlreadyInstalled);
         return;
       }
       removeItem("ceramicFuse");
       state.flags.fuseInstalled = true;
       refreshState();
-      playDialogue([
-        { speaker: "Mumi", text: "The cabinet light came on." },
-        { speaker: "Billi", text: "So did a light somewhere under the bridge." }
-      ]);
+      playDialogue(SCRIPT.backroom.fuseUsed);
     }
   },
   brassToken: {
@@ -1372,10 +1375,7 @@ const itemUses = {
       removeItem("brassToken");
       state.flags.hatchOpen = true;
       refreshState();
-      playDialogue([
-        { speaker: "Billi", text: "The token fits." },
-        { speaker: "Mumi", text: "The pump station was built around this." }
-      ], enterVestibule);
+      playDialogue(SCRIPT.pumpStation.tokenUsed, enterVestibule);
     }
   },
   amberLens: {
@@ -1387,10 +1387,7 @@ const itemUses = {
       removeItem("amberLens");
       state.flags.barrierOpen = true;
       refreshState();
-      playDialogue([
-        { speaker: "Billi", text: "The lens is gathering light from nowhere." },
-        { speaker: "Mumi", text: "And the stone is moving." }
-      ], enterChamber);
+      playDialogue(SCRIPT.vestibule.lensUsed, enterChamber);
     }
   },
   pumpkinCookie: {
@@ -1398,11 +1395,7 @@ const itemUses = {
       removeItem("pumpkinCookie");
       state.flags.batFed = true;
       refreshState();
-      playDialogue([
-        { speaker: "Right Bat", text: "At last. Tribute." },
-        { speaker: "Billi", text: "It is half a cookie." },
-        { speaker: "Left Bat", text: "At last. Measured tribute." }
-      ]);
+      playDialogue(SCRIPT.pieShop.cookieToBats);
     }
   },
   punchCup: {
@@ -1411,19 +1404,23 @@ const itemUses = {
       addItem("spicedPunch");
       state.flags.punchFilled = true;
       refreshState();
-      setLine("Nora", "One scoop, sweetheart. That cider has opinions.");
+      playLine(SCRIPT.pieShop.cupFilled);
     }
   },
   spicedPunch: {
-    enzo: function () {
+    bruno: function () {
       removeItem("spicedPunch");
       state.flags.enzoHadPunch = true;
       refreshState();
-      playDialogue([
-        { speaker: "Nunzio", text: "Nora's cider. Cinnamon, clove, and a formal warning from the dentist." },
-        { speaker: "Billi", text: "She said one scoop." },
-        { speaker: "Nunzio", text: "Nora has always confused hospitality with enforcement." }
-      ]);
+      playDialogue(SCRIPT.pizzeria.bruno.ciderConversation);
+    }
+  },
+  wrappedPizza: {
+    nora: function () {
+      removeItem("wrappedPizza");
+      state.flags.braceletWorn = true;
+      refreshState();
+      playDialogue(SCRIPT.pieShop.pizzaTrade);
     }
   },
   sparkPlugWire: {
@@ -1468,7 +1465,7 @@ function runInteraction(hotspot) {
     return;
   }
 
-  setLine("Billi", "The " + itemDetails[selected].label + " will not help with " + hotspot.label + ".");
+  playLine(SCRIPT.system.cannotUse(itemDetails[selected].label, hotspot.label));
 }
 
 function preloadNextScenes(scene) {
@@ -1520,16 +1517,17 @@ function preloadNextScenes(scene) {
 }
 
 function resetToBeginning() {
+  clearDelayedDialogue();
+  if (pizzaWrapTimer !== null) {
+    window.clearTimeout(pizzaWrapTimer);
+    pizzaWrapTimer = null;
+  }
   state = freshState();
   saveState();
   renderScene(true);
   state.flags.introSeen = true;
   saveState();
-  playDialogue([
-    { speaker: "Billi", text: "The fireflies are going down the bridge path." },
-    { speaker: "Mumi", text: "At midnight?" },
-    { speaker: "Billi", text: "They probably know the neighborhood better than we do." }
-  ]);
+  playDialogue(SCRIPT.opening.firstVisit);
   preloadNextScenes("street");
 }
 
@@ -1576,20 +1574,17 @@ renderScene(true);
 
 if (state.scene === "cosmos") {
   if (state.flags.ended) {
-    setLine("Mumi", "There is no down.");
+    playLine(SCRIPT.cosmos.returnLine);
   } else {
     enterCosmos();
   }
 } else if (!state.flags.introSeen) {
   state.flags.introSeen = true;
   saveState();
-  playDialogue([
-    { speaker: "Billi", text: "The fireflies are going down the bridge path." },
-    { speaker: "Mumi", text: "At midnight?" },
-    { speaker: "Billi", text: "They probably know the neighborhood better than we do." }
-  ]);
+  playDialogue(SCRIPT.opening.firstVisit);
 } else {
   hideDialogue();
+  if (state.scene === "pizzeria") queueBrunoOffer();
 }
 
 preloadNextScenes(state.scene);
