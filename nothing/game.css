@@ -194,6 +194,15 @@ a:focus-visible {
   filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.7));
 }
 
+.scene-decoration--bridge-banner {
+  filter: drop-shadow(1px 2px 0 rgba(7, 12, 24, 0.72));
+  opacity: 0.9;
+}
+
+.scene-decoration--patch {
+  object-fit: fill;
+}
+
 .walkers {
   position: absolute;
   z-index: 3;
@@ -317,8 +326,16 @@ a:focus-visible {
   --arrow-rotation: -135deg;
 }
 
+.hotspot[data-arrow="up-right"] {
+  --arrow-rotation: -45deg;
+}
+
 .hotspot[data-arrow="down-left"] {
   --arrow-rotation: 135deg;
+}
+
+.hotspot[data-arrow="down-right"] {
+  --arrow-rotation: 45deg;
 }
 
 .hotspot[data-arrow]:hover::before,

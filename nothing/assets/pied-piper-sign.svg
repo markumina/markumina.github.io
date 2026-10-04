@@ -1,6 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="112" height="64" viewBox="0 0 112 64">
-  <rect x="3" y="3" width="106" height="58" rx="12" fill="#352019" stroke="#17151a" stroke-width="6"/>
-  <rect x="8" y="8" width="96" height="48" rx="8" fill="none" stroke="#9b5423" stroke-width="2"/>
-  <text x="56" y="29" fill="#ffd078" stroke="#17151a" stroke-width="1" paint-order="stroke" text-anchor="middle" font-family="Courier New, monospace" font-size="18" font-weight="700">PIE'D</text>
-  <text x="56" y="49" fill="#ffd078" stroke="#17151a" stroke-width="1" paint-order="stroke" text-anchor="middle" font-family="Courier New, monospace" font-size="18" font-weight="700">PIPER</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="112" viewBox="0 0 160 112">
+  <defs>
+    <filter id="rough-ink" x="-15%" y="-20%" width="130%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08 0.22" numOctaves="1" seed="19" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <rect x="10" y="38" width="140" height="68" rx="10" fill="#352019" stroke="#17151a" stroke-width="6"/>
+  <rect x="16" y="44" width="128" height="56" rx="6" fill="none" stroke="#a45d2c" stroke-width="2"/>
+
+  <text x="29" y="73" fill="#ffd483" stroke="#17151a" stroke-width="1.2" paint-order="stroke"
+        font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700">Pie</text>
+  <text x="76" y="73" fill="#d9b77c" stroke="#17151a" stroke-width="1" paint-order="stroke"
+        font-family="Georgia, 'Times New Roman', serif" font-size="18" font-weight="700">'d</text>
+  <text x="35" y="96" fill="#d9b77c" stroke="#17151a" stroke-width="1" paint-order="stroke"
+        font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="700">Piper</text>
+
+  <g fill="none" stroke="#c13a2c" stroke-linecap="round">
+    <path d="M72 59 L105 77" stroke-width="4"/>
+    <path d="M75 76 L103 58" stroke-width="2.5"/>
+    <path d="M28 86 L105 99" stroke-width="4"/>
+    <path d="M31 99 L108 84" stroke-width="2.5"/>
+  </g>
+
+  <g transform="rotate(-3 94 24)">
+    <rect x="43" y="4" width="104" height="38" rx="3" fill="#ddb66e" stroke="#281a17" stroke-width="5"/>
+    <path d="M49 11 H140 M49 35 H140" fill="none" stroke="#aa743d" stroke-width="1.5" opacity="0.7"/>
+    <circle cx="50" cy="11" r="2.5" fill="#594235"/>
+    <circle cx="140" cy="11" r="2.5" fill="#594235"/>
+    <text x="52" y="31" fill="#43251c" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-style="italic" font-weight="700">or</text>
+    <text x="78" y="32" fill="#a91f22" stroke="#651516" stroke-width="0.7" paint-order="stroke"
+          font-family="Georgia, 'Times New Roman', serif" font-size="25" font-weight="900" filter="url(#rough-ink)">DIE</text>
+    <path d="M80 35 L132 31 M87 12 L124 36" fill="none" stroke="#b42a28" stroke-width="1.4" opacity="0.75"/>
+  </g>
 </svg>

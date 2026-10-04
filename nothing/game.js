@@ -4,7 +4,7 @@ const itemDetails = {
   deliveryTag: {
     label: "delivery tag",
     speaker: "Billi",
-    held: "The old Bellini's delivery tag. Enzo should see it.",
+    held: "The old Bellini's delivery tag. Nunzio should see it.",
     description: "Rain-softened paper from a delivery made to the pump station in 1978."
   },
   brassToken: {
@@ -22,7 +22,7 @@ const itemDetails = {
   ceramicFuse: {
     label: "ceramic fuse",
     speaker: "Billi",
-    held: "The fuse. There was an empty socket in Enzo's back room.",
+    held: "The fuse. There was an empty socket in Nunzio's back room.",
     description: "A white ceramic fuse from a box of old electrical parts."
   },
   amberLens: {
@@ -41,13 +41,25 @@ const itemDetails = {
     label: "paper cup",
     speaker: "Mumi",
     held: "An empty paper cup from Nora's tasting table.",
-    description: "Orange paper, black stars, and no punch yet."
+    description: "Orange paper, black stars, and no cider yet."
   },
   spicedPunch: {
-    label: "spiced punch",
+    label: "spiced cider",
     speaker: "Billi",
-    held: "A warm cup of Nora's spiced apple punch.",
+    held: "A warm cup of Nora's spiced apple cider.",
     description: "Apple, cinnamon, orange peel, and a suspicious amount of clove."
+  },
+  nightPerfume: {
+    label: "Perfume of the Night",
+    speaker: "Billi",
+    held: "Nora's little amber bottle of Perfume of the Night.",
+    description: "A few sprays made from pumpkin essential oil, cedar, and clove."
+  },
+  sparkPlugWire: {
+    label: "spark plug wire",
+    speaker: "Mumi",
+    held: "The red spark plug wire from the car graveyard. Old, flexible, and still tough.",
+    description: "A long red ignition lead with sound insulation and a metal terminal at each end."
   }
 };
 
@@ -61,9 +73,61 @@ const sceneDefinitions = {
     hotspots: [
       { action: "streetUtility", label: "utility box", left: 0, top: 50, width: 12, height: 30, walk: [11, 82] },
       { action: "riverStone", label: "round stone", left: 8, top: 66, width: 9, height: 12, walk: [15, 83] },
-      { action: "bridgePath", label: "riverside path", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit", arrow: "down-left", arrowX: 25, arrowY: 66 },
+      { action: "bridgePath", label: "riverside path", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit", arrow: "up-right", arrowX: 25, arrowY: 66 },
       { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit", arrow: "right", arrowX: 76, arrowY: 62 },
-      { action: "marketPath", label: "shops farther up Willow Street", left: 88, top: 79, width: 12, height: 15, walk: [93, 86], kind: "exit", arrow: "right", arrowX: 48, arrowY: 42 }
+      { action: "marketPath", label: "shops farther up Willow Street", left: 88, top: 79, width: 12, height: 15, walk: [93, 86], kind: "exit", arrow: "right", arrowX: 48, arrowY: 42 },
+      { action: "lowerWillowPath", label: "lower Willow Street", left: 37, top: 82, width: 18, height: 14, walk: [46, 91], kind: "exit", arrow: "down-left", arrowX: 45, arrowY: 62 }
+    ]
+  },
+  lowerWillow: {
+    image: "assets/scene-lower-willow.png",
+    alt: "The quiet lower end of Willow Street where occupied houses give way to vacant lots",
+    location: "Lower Willow Street",
+    start: [88, 85],
+    walk: { minX: 5, maxX: 95, minY: 70, maxY: 92 },
+    hotspots: [
+      { action: "lowerWillowBack", label: "Willow Street", left: 82, top: 43, width: 18, height: 47, walk: [91, 82], kind: "exit", arrow: "up-right", arrowX: 67, arrowY: 62 },
+      { action: "lowerWillowForward", label: "road past the last houses", left: 0, top: 43, width: 18, height: 43, walk: [8, 82], kind: "exit", arrow: "down-left", arrowX: 48, arrowY: 68 },
+      { action: "lastPorch", label: "lit porch", left: 67, top: 25, width: 25, height: 39, walk: [77, 74] },
+      { action: "shutteredShop", label: "shuttered shop", left: 22, top: 34, width: 23, height: 38, walk: [35, 76] },
+      { action: "vacantLot", label: "overgrown vacant lot", left: 43, top: 38, width: 24, height: 34, walk: [55, 76] }
+    ]
+  },
+  woodline: {
+    image: "assets/scene-woodline.png",
+    alt: "The last streetlamp at the edge of town beside a narrow track entering dark woods",
+    location: "The Woodline",
+    start: [88, 85],
+    walk: { minX: 5, maxX: 95, minY: 69, maxY: 92 },
+    hotspots: [
+      { action: "woodlineBack", label: "lower Willow Street", left: 78, top: 35, width: 22, height: 50, walk: [91, 82], kind: "exit", arrow: "up-right", arrowX: 72, arrowY: 66 },
+      { action: "woodlineForward", label: "track into the woods", left: 0, top: 33, width: 31, height: 55, walk: [10, 81], kind: "exit", arrow: "up-left", arrowX: 45, arrowY: 67 },
+      { action: "lastStreetlight", label: "last streetlight", left: 61, top: 12, width: 20, height: 61, walk: [69, 75] },
+      { action: "woodlandChain", label: "fallen chain barrier", left: 18, top: 49, width: 31, height: 25, walk: [36, 76] }
+    ]
+  },
+  carGraveyard: {
+    image: function () {
+      if (!state.flags.carHoodOpen) return "assets/scene-car-graveyard-closed.png";
+      return state.flags.sparkPlugWireFound
+        ? "assets/scene-car-graveyard-empty.png"
+        : "assets/scene-car-graveyard-open.png";
+    },
+    alt: function () {
+      return state.flags.carHoodOpen
+        ? "An unofficial car graveyard in the woods with the hood of a rotted red muscle car standing open"
+        : "An unofficial car graveyard in the woods with a rotted red muscle car resting on blocks";
+    },
+    location: "Car Graveyard",
+    start: [88, 85],
+    walk: { minX: 5, maxX: 95, minY: 68, maxY: 92 },
+    hotspots: [
+      { action: "graveyardBack", label: "track to town", left: 82, top: 31, width: 18, height: 53, walk: [91, 81], kind: "exit", arrow: "up-right", arrowX: 70, arrowY: 57 },
+      { action: "ninetiesSedan", label: "boxy nineties sedan", left: 0, top: 29, width: 33, height: 34, walk: [20, 72] },
+      { action: "olderCarShell", label: "older car shell", left: 25, top: 25, width: 23, height: 24, walk: [36, 70] },
+      { action: "muscleCarHood", label: "red muscle car hood", left: 32, top: 23, width: 32, height: 32, walk: [52, 70] },
+      { action: "missingWheel", label: "missing wheel and blocks", left: 53, top: 50, width: 28, height: 22, walk: [68, 74] },
+      { action: "sparkPlugWire", label: "red spark plug wire", left: 43, top: 39, width: 18, height: 15, walk: [52, 70], kind: "pickup", when: function () { return state.flags.carHoodOpen && !state.flags.sparkPlugWireFound; } }
     ]
   },
   riverside: {
@@ -76,7 +140,7 @@ const sceneDefinitions = {
       { action: "riversideBack", label: "Willow Street", left: 0, top: 13, width: 24, height: 68, walk: [10, 76], kind: "exit", arrow: "up-left", arrowX: 38, arrowY: 44 },
       { action: "riversideLamp", label: "old streetlamp", left: 38, top: 29, width: 15, height: 48, walk: [46, 78] },
       { action: "riversideRiver", label: "river", left: 52, top: 43, width: 38, height: 27, walk: [65, 72] },
-      { action: "riversideForward", label: "under the bridge", left: 73, top: 29, width: 27, height: 62, walk: [89, 82], kind: "exit", arrow: "right", arrowX: 72, arrowY: 64 }
+      { action: "riversideForward", label: "under the bridge", left: 73, top: 29, width: 27, height: 62, walk: [84, 91], kind: "exit", arrow: "down-right", arrowX: 38, arrowY: 94 }
     ]
   },
   bridge: {
@@ -85,6 +149,9 @@ const sceneDefinitions = {
     location: "Under Hawthorn Bridge",
     start: [40, 84],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
+    decorations: [
+      { asset: "assets/bridge-halloween-banner.svg", left: 2, top: 1, width: 24, height: 13, className: "scene-decoration--bridge-banner" }
+    ],
     patches: [
       {
         target: [328, 157, 19, 15],
@@ -102,15 +169,15 @@ const sceneDefinitions = {
   },
   pizzeria: {
     image: "assets/scene-pizzeria.png",
-    alt: "A modest family pizzeria with Enzo behind the counter",
+    alt: "A modest family pizzeria with Nunzio behind the counter",
     location: "Bellini's Pizza",
     start: [20, 87],
     walk: { minX: 6, maxX: 94, minY: 67, maxY: 92 },
     hotspots: [
-      { action: "pizzeriaExit", label: "Willow Street", left: 0, top: 40, width: 11, height: 50, walk: [8, 84], kind: "exit", arrow: "left" },
+      { action: "pizzeriaExit", label: "Willow Street", left: 14, top: 72, width: 20, height: 20, walk: [20, 91], kind: "exit", arrow: "down-left", arrowX: 50, arrowY: 80 },
       { action: "townPhotos", label: "old town photographs", left: 5, top: 13, width: 31, height: 30, walk: [28, 73] },
       { action: "pizzaCounter", label: "pizza counter", left: 37, top: 38, width: 49, height: 28, walk: [58, 72] },
-      { action: "enzo", label: "Enzo Bellini", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
+      { action: "enzo", label: "Nunzio Bellini", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
       { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit", arrow: "right" }
     ]
   },
@@ -121,40 +188,57 @@ const sceneDefinitions = {
     start: [12, 85],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
     decorations: [
-      { asset: "assets/pied-piper-sign.svg", left: 76, top: 14, width: 14, height: 14, className: "scene-decoration--sign" }
+      { asset: "assets/pied-piper-sign.svg", left: 75, top: 11, width: 16, height: 18, className: "scene-decoration--sign" }
     ],
     hotspots: [
       { action: "marketBack", label: "Willow Street", left: 0, top: 35, width: 14, height: 38, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 42, arrowY: 68 },
       { action: "piperWindows", label: "Pie'd Piper windows", left: 43, top: 38, width: 29, height: 34, walk: [58, 78] },
-      { action: "piperSign", label: "Pie'd Piper sign", left: 75, top: 12, width: 16, height: 18, walk: [80, 77] },
-      { action: "piperDoor", label: "Pie'd Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 50, arrowY: 78 },
+      { action: "piperSign", label: "altered Pie or Die sign", left: 74, top: 9, width: 18, height: 22, walk: [80, 77] },
+      { action: "piperDoor", label: "Pie'd Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 35, arrowY: 78 },
       { action: "marketPumpkins", label: "jack-o'-lanterns", left: 64, top: 62, width: 34, height: 19, walk: [79, 82] }
     ]
   },
   piedPiper: {
     image: "assets/scene-pied-piper.png",
-    alt: "A cozy Halloween pie shop with Nora Piper, hanging bats, cookies, cups, and a steaming pot",
+    alt: "A cozy Halloween pie shop with the lively Nora Piper, hanging bats, cookies, cider, and an amber perfume bottle",
     location: "Pie'd Piper",
     start: [14, 84],
     walk: { minX: 6, maxX: 94, minY: 68, maxY: 91 },
-    patches: [
+    decorations: [
       {
-        target: [153, 108, 22, 28],
-        source: [175, 108],
-        when: function () { return state.flags.cupTaken; }
+        asset: "assets/piper-table-no-cups.png",
+        left: 32.5521,
+        top: 42.9688,
+        width: 13.6719,
+        height: 12.6953,
+        className: "scene-decoration--patch",
+        when: function () { return state.flags.cupTaken && !state.flags.cookieTaken; }
       },
       {
-        target: [129, 126, 42, 20],
-        source: [171, 126],
-        when: function () { return state.flags.cookieTaken; }
+        asset: "assets/piper-table-no-cookies.png",
+        left: 32.5521,
+        top: 42.9688,
+        width: 13.6719,
+        height: 12.6953,
+        className: "scene-decoration--patch",
+        when: function () { return state.flags.cookieTaken && !state.flags.cupTaken; }
+      },
+      {
+        asset: "assets/piper-table-empty.png",
+        left: 32.5521,
+        top: 42.9688,
+        width: 13.6719,
+        height: 12.6953,
+        className: "scene-decoration--patch",
+        when: function () { return state.flags.cupTaken && state.flags.cookieTaken; }
       }
     ],
     hotspots: [
       { action: "piperExit", label: "Market Street", left: 0, top: 18, width: 13, height: 55, walk: [8, 79], kind: "exit", arrow: "left", arrowX: 45, arrowY: 72 },
       { action: "piperBats", label: "hanging bats", left: 12, top: 5, width: 20, height: 17, walk: [25, 72] },
       { action: "piperDecorations", label: "Halloween shelves", left: 45, top: 5, width: 22, height: 38, walk: [55, 70] },
-      { action: "witchBrew", label: "smoking punch pot", left: 27, top: 36, width: 12, height: 15, walk: [34, 75] },
-      { action: "punchCups", label: "paper punch cups", left: 40, top: 39, width: 9, height: 12, walk: [44, 75], kind: "pickup", when: function () { return !state.flags.cupTaken; } },
+      { action: "witchBrew", label: "smoking cider pot", left: 27, top: 36, width: 12, height: 15, walk: [34, 75] },
+      { action: "punchCups", label: "paper cider cups", left: 40, top: 39, width: 9, height: 12, walk: [44, 75], kind: "pickup", when: function () { return !state.flags.cupTaken; } },
       { action: "cookiePlate", label: "pumpkin cookies", left: 33, top: 52, width: 15, height: 10, walk: [42, 77], kind: "pickup", when: function () { return !state.flags.cookieTaken; } },
       { action: "pieCase", label: "pie case", left: 61, top: 44, width: 29, height: 28, walk: [68, 72] },
       { action: "nora", label: "Nora Piper", left: 74, top: 27, width: 14, height: 18, walk: [76, 70] }
@@ -252,9 +336,21 @@ const sceneDefinitions = {
     location: "The Chamber",
     start: [17, 86],
     walk: { minX: 6, maxX: 94, minY: 71, maxY: 92 },
+    decorations: [
+      {
+        asset: "assets/chamber-spark-wire.svg",
+        left: 0,
+        top: 0,
+        width: 100,
+        height: 100,
+        className: "scene-decoration--patch",
+        when: function () { return state.flags.portalLeadTied; }
+      }
+    ],
     hotspots: [
       { action: "chamberExit", label: "vestibule", left: 0, top: 19, width: 18, height: 52, walk: [10, 81], kind: "exit", arrow: "left" },
       { action: "starDial", label: "brass star dial", left: 35, top: 31, width: 19, height: 33, walk: [44, 75] },
+      { action: "retainingEyes", label: "loose brass contact", left: 47, top: 48, width: 27, height: 12, walk: [59, 77] },
       { action: "riverDial", label: "round floor dial", left: 52, top: 61, width: 19, height: 15, walk: [61, 79] },
       { action: "portal", label: "stone ring", left: 69, top: 15, width: 30, height: 58, walk: [82, 78], arrow: "right" }
     ]
@@ -286,6 +382,9 @@ function freshState() {
       tokenFound: false,
       pizzeriaVisited: false,
       piperVisited: false,
+      nightPerfumeGiven: false,
+      carHoodOpen: false,
+      sparkPlugWireFound: false,
       cookieTaken: false,
       cupTaken: false,
       punchFilled: false,
@@ -306,6 +405,7 @@ function freshState() {
       chamberVisited: false,
       starDialSet: false,
       riverDialSet: false,
+      portalLeadTied: false,
       portalOpen: false,
       ended: false
     }
@@ -716,6 +816,7 @@ function refreshState() {
   saveState();
   renderHotspots();
   renderScenePatches(sceneValue(sceneDefinitions[state.scene].image));
+  renderSceneDecorations();
   renderInventory();
 }
 
@@ -745,9 +846,10 @@ function enterPizzeria() {
   const firstVisit = !state.flags.pizzeriaVisited;
   state.flags.pizzeriaVisited = true;
   goToScene("pizzeria", firstVisit ? [
-    { speaker: "Enzo", text: "The oven is off, but I can still manage two slices." },
-    { speaker: "Billi", text: "We're only walking." },
-    { speaker: "Enzo", text: "Under that bridge? Then walk with your eyes open." }
+    { speaker: "Nunzio", text: "Ayyy! How'sa u mutha and fatha?" },
+    { speaker: "Nunzio", text: "U looka too skinny. Eat somethin!" },
+    { speaker: "Nunzio", text: "Hey, wanna the fries and a coupla piece a pizza?" },
+    { speaker: "Nunzio", text: "U gotta hurry up becuza ima closa in a few minute." }
   ] : null);
 }
 
@@ -755,10 +857,10 @@ function enterPiedPiper() {
   const firstVisit = !state.flags.piperVisited;
   state.flags.piperVisited = true;
   goToScene("piedPiper", firstVisit ? [
-    { speaker: "Nora", text: "Come in. The punch is warm and the bats are in a mood." },
-    { speaker: "Billi", text: "Those are paper bats." },
-    { speaker: "Left Bat", text: "Decorative, she says. After everything we do for the ceiling." },
-    { speaker: "Nora", text: "They get difficult after ten." }
+    { speaker: "Nora", text: "Well, look what the moon dragged in. Come warm up. The cider's behaving, mostly." },
+    { speaker: "Billi", text: "We're just looking." },
+    { speaker: "Nora", text: "Everybody says that. Then the pie gets involved." },
+    { speaker: "Left Bat", text: "Her sales pitch has casualties." }
   ] : null);
 }
 
@@ -766,9 +868,9 @@ function enterBackroom() {
   const firstVisit = !state.flags.backroomVisited;
   state.flags.backroomVisited = true;
   goToScene("backroom", firstVisit ? [
-    { speaker: "Enzo", text: "My father saved everything except useful shelf space." },
+    { speaker: "Nunzio", text: "My father saved everything except useful shelf space." },
     { speaker: "Mumi", text: "These are plans for the bridge." },
-    { speaker: "Enzo", text: "And the old pump room under it. Take what helps." }
+    { speaker: "Nunzio", text: "And the old pump room under it. Take what helps." }
   ] : null);
 }
 
@@ -836,6 +938,70 @@ const actions = {
   bridgePath: function () { goToScene("riverside"); },
   pizzeriaDoor: enterPizzeria,
   marketPath: function () { goToScene("market"); },
+  lowerWillowPath: function () { goToScene("lowerWillow"); },
+
+  lowerWillowBack: function () { goToScene("street"); },
+  lowerWillowForward: function () { goToScene("woodline"); },
+
+  lastPorch: function () {
+    setLine("Billi", "A paper pumpkin turning under the porch light. Someone still changes that bulb.");
+  },
+
+  shutteredShop: function () {
+    setLine("Mumi", "The lettering is gone. The shelves are still in there.");
+  },
+
+  vacantLot: function () {
+    setLine("Billi", "Old tire tracks cut through the weeds and keep going downhill.");
+  },
+
+  woodlineBack: function () { goToScene("lowerWillow"); },
+  woodlineForward: function () { goToScene("carGraveyard"); },
+
+  lastStreetlight: function () {
+    setLine("Mumi", "Last bulb on the line. The wire stops here, but the tire tracks do not.");
+  },
+
+  woodlandChain: function () {
+    setLine("Billi", "Someone dropped the chain years ago and kept driving through.");
+  },
+
+  graveyardBack: function () { goToScene("woodline"); },
+
+  ninetiesSedan: function () {
+    setLine("Mumi", "Early nineties. It looks like every school parking lot at once.");
+  },
+
+  olderCarShell: function () {
+    setLine("Billi", "The trees have been here long enough to grow around the bumper.");
+  },
+
+  muscleCarHood: function () {
+    if (!state.flags.carHoodOpen) {
+      state.flags.carHoodOpen = true;
+      saveState();
+      renderScene(false);
+      setLine("Mumi", "The hinges complain, but the hood stays up.");
+      return;
+    }
+    if (!state.flags.sparkPlugWireFound) {
+      setLine("Billi", "Most of the wiring is brittle. One red ignition lead still bends.");
+      return;
+    }
+    setLine("Mumi", "Nothing else in the engine bay wants to come quietly.");
+  },
+
+  missingWheel: function () {
+    setLine("Billi", "One wheel off, two blocks under it, and twenty years of leaves.");
+  },
+
+  sparkPlugWire: function () {
+    state.flags.sparkPlugWireFound = true;
+    addItem("sparkPlugWire");
+    saveState();
+    renderScene(false);
+    setLine("Mumi", "A red spark plug wire. Old, but the insulation still flexes.");
+  },
 
   riversideBack: function () { goToScene("street"); },
 
@@ -892,7 +1058,7 @@ const actions = {
   },
 
   piperSign: function () {
-    setLine("Mumi", "Pie'd Piper. The apostrophe is doing a lot of work.");
+    setLine("Mumi", "Pie or Die. Seasonal rebranding with a threat.");
   },
 
   piperDoor: enterPiedPiper,
@@ -918,7 +1084,7 @@ const actions = {
   },
 
   witchBrew: function () {
-    setLine("Nora", "Spiced apple punch. The pot only looks guilty.");
+    setLine("Nora", "Spiced apple cider. The pot only looks guilty.");
   },
 
   punchCups: function () {
@@ -940,6 +1106,19 @@ const actions = {
   },
 
   nora: function () {
+    if (!state.flags.nightPerfumeGiven) {
+      state.flags.nightPerfumeGiven = true;
+      addItem("nightPerfume");
+      refreshState();
+      playDialogue([
+        { speaker: "Nora", text: "Before you go, take this. Perfume of the Night." },
+        { speaker: "Billi", text: "It smells like pumpkin." },
+        { speaker: "Nora", text: "Pumpkin oil, cedar, and clove. We make one little batch every Halloween." },
+        { speaker: "Mumi", text: "Perfume or potion?" },
+        { speaker: "Nora", text: "Two sprays, perfume. Three sprays, depends who's asking." }
+      ]);
+      return;
+    }
     if (state.flags.batFed) {
       setLine("Nora", "You fed them. Now they will complain about crumbs until Christmas.");
       return;
@@ -950,7 +1129,7 @@ const actions = {
   pizzeriaExit: function () { goToScene("street"); },
 
   townPhotos: function () {
-    setLine("Billi", "One photograph shows Enzo's father carrying pizza boxes under the bridge.");
+    setLine("Billi", "One photograph shows Nunzio's father carrying pizza boxes under the bridge.");
   },
 
   pizzaCounter: function () {
@@ -959,15 +1138,15 @@ const actions = {
 
   enzo: function () {
     if (state.flags.enzoTrusts) {
-      setLine("Enzo", "The back room is open. Mind the flour sacks.");
+      setLine("Nunzio", "The back room is open. Mind the flour sacks.");
       return;
     }
-    setLine("Enzo", "My father used to make deliveries under that bridge. Long time ago.");
+    setLine("Nunzio", "My father used to make deliveries under that bridge. Long time ago.");
   },
 
   backroomDoor: function () {
     if (!state.flags.enzoTrusts) {
-      setLine("Enzo", "Family storage. What did you find under the bridge?");
+      setLine("Nunzio", "Family storage. What did you find under the bridge?");
       return;
     }
     enterBackroom();
@@ -1023,7 +1202,7 @@ const actions = {
     refreshState();
     playDialogue([
       { speaker: "Billi", text: "An amber survey lens." },
-      { speaker: "Enzo", text: "My father said it showed things that ordinary glass missed." }
+      { speaker: "Nunzio", text: "My father said it showed things that ordinary glass missed." }
     ]);
   },
 
@@ -1082,7 +1261,15 @@ const actions = {
     }
     state.flags.starDialSet = true;
     refreshState();
-    setLine("Billi", "The dial stops at the only constellation missing a star.");
+    setLine("Billi", "The dial stops at the missing star. Its brass contact swings toward the ring, then springs back.");
+  },
+
+  retainingEyes: function () {
+    if (state.flags.portalLeadTied) {
+      setLine("Mumi", "The red ignition lead is holding both brass eyes together.");
+      return;
+    }
+    setLine("Mumi", "One brass eye is on the dial and one is on the ring. They need to be held together.");
   },
 
   riverDial: function () {
@@ -1108,6 +1295,10 @@ const actions = {
       setLine("Billi", "The stars are set. The round floor dial is not.");
       return;
     }
+    if (!state.flags.portalLeadTied) {
+      setLine("Mumi", "Both dials are set, but the loose brass contact keeps springing away from the ring.");
+      return;
+    }
     state.flags.portalOpen = true;
     saveState();
     playDialogue([
@@ -1117,21 +1308,28 @@ const actions = {
   }
 };
 
+function tiePortalContact() {
+  removeItem("sparkPlugWire");
+  state.flags.portalLeadTied = true;
+  refreshState();
+  setLine("Mumi", "The spark plug wire holds the dial's brass contact against the ring.");
+}
+
 const itemUses = {
   deliveryTag: {
     enzo: function () {
       if (state.flags.enzoTrusts) {
-        setLine("Enzo", "Keep it. My father would have liked that.");
+        setLine("Nunzio", "Keep it. My father would have liked that.");
         return;
       }
       removeItem("deliveryTag");
       state.flags.enzoTrusts = true;
       refreshState();
       playDialogue([
-        { speaker: "Enzo", text: "Where did you find this?" },
+        { speaker: "Nunzio", text: "Where did you find this?" },
         { speaker: "Billi", text: "At the pump-building door." },
-        { speaker: "Enzo", text: "My father delivered to the night crew. Then one winter the orders stopped." },
-        { speaker: "Enzo", text: "His bridge things are in the back room. Go look." }
+        { speaker: "Nunzio", text: "My father delivered to the night crew. Then one winter the orders stopped." },
+        { speaker: "Nunzio", text: "His bridge things are in the back room. Go look." }
       ]);
     }
   },
@@ -1213,10 +1411,7 @@ const itemUses = {
       addItem("spicedPunch");
       state.flags.punchFilled = true;
       refreshState();
-      playDialogue([
-        { speaker: "Nora", text: "One scoop. It is punch, not a municipal resource." },
-        { speaker: "Mumi", text: "It smells like an apple pie learned to swim." }
-      ]);
+      setLine("Nora", "One scoop, sweetheart. That cider has opinions.");
     }
   },
   spicedPunch: {
@@ -1225,11 +1420,16 @@ const itemUses = {
       state.flags.enzoHadPunch = true;
       refreshState();
       playDialogue([
-        { speaker: "Enzo", text: "Nora's punch. Cinnamon, clove, and a formal warning from the dentist." },
+        { speaker: "Nunzio", text: "Nora's cider. Cinnamon, clove, and a formal warning from the dentist." },
         { speaker: "Billi", text: "She said one scoop." },
-        { speaker: "Enzo", text: "Nora has always confused hospitality with enforcement." }
+        { speaker: "Nunzio", text: "Nora has always confused hospitality with enforcement." }
       ]);
     }
+  },
+  sparkPlugWire: {
+    retainingEyes: tiePortalContact,
+    starDial: tiePortalContact,
+    portal: tiePortalContact
   }
 };
 
@@ -1273,7 +1473,10 @@ function runInteraction(hotspot) {
 
 function preloadNextScenes(scene) {
   const sceneOrder = {
-    street: ["riverside", "pizzeria", "market"],
+    street: ["riverside", "pizzeria", "market", "lowerWillow"],
+    lowerWillow: ["street", "woodline"],
+    woodline: ["lowerWillow", "carGraveyard"],
+    carGraveyard: ["woodline"],
     riverside: ["street", "bridge"],
     bridge: ["riverside", "pizzeria", "pumphouse"],
     pizzeria: ["street", "backroom", "market"],
@@ -1295,6 +1498,17 @@ function preloadNextScenes(scene) {
     if (scene === "pumphouse" && !state.flags.hatchRevealed) {
       const revealed = new Image();
       revealed.src = "assets/scene-pumphouse-revealed.png";
+    }
+
+    if (scene === "woodline" || scene === "carGraveyard") {
+      [
+        "assets/scene-car-graveyard-closed.png",
+        "assets/scene-car-graveyard-open.png",
+        "assets/scene-car-graveyard-empty.png"
+      ].forEach(function (source) {
+        const graveyardState = new Image();
+        graveyardState.src = source;
+      });
     }
   };
 

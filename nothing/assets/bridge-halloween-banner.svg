@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="132" viewBox="0 0 420 132" shape-rendering="crispEdges">
+  <g transform="rotate(-10 210 66)">
+    <path d="M17 31 H403" fill="none" stroke="#8b6338" stroke-width="4"/>
+    <path d="M30 24 L30 43 M390 24 L390 43" fill="none" stroke="#bc7b32" stroke-width="5"/>
+    <path d="M35 38 L388 38 L382 105 L350 101 L319 108 L287 102 L255 108 L223 102 L191 108 L159 101 L127 107 L95 100 L63 105 L39 98 Z"
+          fill="#d9bd82" stroke="#3a2b29" stroke-width="5"/>
+    <path d="M48 49 L376 49 M48 91 L374 91" fill="none" stroke="#a47c48" stroke-width="2" stroke-dasharray="7 6" opacity="0.8"/>
+    <path d="M48 72 L56 67 L64 72 L56 77 Z M362 71 L370 66 L378 71 L370 76 Z" fill="#37242c"/>
+    <text x="210" y="68" text-anchor="middle" fill="#69402d"
+          font-family="Georgia, 'Times New Roman', serif" font-size="16" font-style="italic" font-weight="700">WELCOME</text>
+    <text x="210" y="91" text-anchor="middle" fill="#963b22" stroke="#40221e" stroke-width="0.7" paint-order="stroke"
+          font-family="Georgia, 'Times New Roman', serif" font-size="23" font-weight="700">GHOULS &amp; GOBLINS</text>
+  </g>
+</svg>
