@@ -184,20 +184,20 @@ const sceneDefinitions = {
     start: [12, 85],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
     decorations: [
-      { asset: "assets/pied-piper-sign.svg", left: 75, top: 11, width: 16, height: 18, className: "scene-decoration--sign" }
+      { asset: "assets/pied-piper-sign.svg", left: 75, top: 15.5, width: 16, height: 20, className: "scene-decoration--sign" }
     ],
     hotspots: [
       { action: "marketBack", label: "Willow Street", left: 0, top: 35, width: 14, height: 38, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 42, arrowY: 68 },
-      { action: "piperWindows", label: "Pie'd Piper windows", left: 43, top: 38, width: 29, height: 34, walk: [58, 78] },
-      { action: "piperSign", label: "altered Pie or Die sign", left: 74, top: 9, width: 18, height: 22, walk: [80, 77] },
-      { action: "piperDoor", label: "Pie'd Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 35, arrowY: 78 },
+      { action: "piperWindows", label: "Pie Piper windows", left: 43, top: 38, width: 29, height: 34, walk: [58, 78] },
+      { action: "piperSign", label: "altered Pie Piper sign", left: 74, top: 16, width: 18, height: 20, walk: [80, 77] },
+      { action: "piperDoor", label: "Pie Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 35, arrowY: 78 },
       { action: "marketPumpkins", label: "jack-o'-lanterns", left: 64, top: 62, width: 34, height: 19, walk: [79, 82] }
     ]
   },
   piedPiper: {
     image: "assets/scene-pied-piper.png",
     alt: "A cozy Halloween pie shop with the lively Nora Piper, hanging bats, cookies, cider, and an amber perfume bottle",
-    location: "Pie'd Piper",
+    location: "Pie Piper",
     start: [14, 84],
     walk: { minX: 6, maxX: 94, minY: 68, maxY: 91 },
     decorations: [
@@ -449,6 +449,7 @@ let dialogueIndex = 0;
 let dialogueDone = null;
 let delayedDialogueTimer = null;
 let pizzaWrapTimer = null;
+let itemNoticeTimer = null;
 let walkRequest = 0;
 let batRemarkIndex = 0;
 let positions = {
@@ -466,6 +467,9 @@ const inventory = document.querySelector("#inventory");
 const heldItem = document.querySelector("#held-item");
 const locationLabel = document.querySelector("#location-label");
 const objectLabel = document.querySelector("#object-label");
+const itemNotice = document.querySelector("#item-notice");
+const itemNoticeTitle = document.querySelector("#item-notice-title");
+const itemNoticeText = document.querySelector("#item-notice-text");
 const dialogue = document.querySelector("#dialogue");
 const speaker = document.querySelector("#speaker");
 const dialogueLine = document.querySelector("#dialogue-line");
@@ -568,19 +572,35 @@ function advanceDialogue() {
   if (onDone) onDone();
 }
 
+function showItemNotice(title, text) {
+  if (itemNoticeTimer !== null) window.clearTimeout(itemNoticeTimer);
+  itemNoticeTitle.textContent = title;
+  itemNoticeText.textContent = text;
+  itemNotice.hidden = false;
+  itemNotice.classList.remove("is-visible");
+  void itemNotice.offsetWidth;
+  itemNotice.classList.add("is-visible");
+  itemNoticeTimer = window.setTimeout(function () {
+    itemNoticeTimer = null;
+    itemNotice.hidden = true;
+    itemNotice.classList.remove("is-visible");
+  }, 2600);
+}
+
 function selectItem(item) {
+  const details = itemDetails[item];
   if (state.selectedItem === item) {
     state.selectedItem = null;
     saveState();
     renderInventory();
-    playLine(itemDetails[item].description);
+    showItemNotice("back in the pocket", details.label);
     return;
   }
 
   state.selectedItem = item;
   saveState();
   renderInventory();
-  playLine(itemDetails[item].held);
+  showItemNotice("holding " + details.label, details.held.text);
 }
 
 function renderInventory() {
@@ -603,7 +623,7 @@ function renderInventory() {
       button.addEventListener("click", function () { selectItem(item); });
       button.addEventListener("contextmenu", function (event) {
         event.preventDefault();
-        playLine(details.description);
+        showItemNotice(details.label, details.description.text);
       });
       inventory.append(button);
     });
@@ -1465,7 +1485,8 @@ function runInteraction(hotspot) {
     return;
   }
 
-  playLine(SCRIPT.system.cannotUse(itemDetails[selected].label, hotspot.label));
+  const noUse = SCRIPT.system.cannotUse(itemDetails[selected].label, hotspot.label);
+  showItemNotice("still holding " + itemDetails[selected].label, noUse.text);
 }
 
 function preloadNextScenes(scene) {
@@ -1518,6 +1539,12 @@ function preloadNextScenes(scene) {
 
 function resetToBeginning() {
   clearDelayedDialogue();
+  if (itemNoticeTimer !== null) {
+    window.clearTimeout(itemNoticeTimer);
+    itemNoticeTimer = null;
+  }
+  itemNotice.hidden = true;
+  itemNotice.classList.remove("is-visible");
   if (pizzaWrapTimer !== null) {
     window.clearTimeout(pizzaWrapTimer);
     pizzaWrapTimer = null;

@@ -42,6 +42,11 @@
       <div class="hotspots" id="hotspots"></div>
       <span class="object-label" id="object-label" hidden></span>
 
+      <div class="item-notice" id="item-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
+        <strong id="item-notice-title"></strong>
+        <span id="item-notice-text"></span>
+      </div>
+
       <section class="dialogue" id="dialogue" aria-live="polite" aria-atomic="true" hidden>
         <p><strong id="speaker"></strong><span id="dialogue-line"></span></p>
         <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue">continue&nbsp;&rsaquo;</button>
@@ -64,8 +69,8 @@
   </section>
 
   <footer class="pocket-bar">
-    <span class="pocket-label">pocket</span>
-    <div class="inventory" id="inventory" aria-label="Pocket"></div>
+    <span class="pocket-label">magic pocket</span>
+    <div class="inventory" id="inventory" aria-label="Magic pocket"></div>
     <span class="held-item" id="held-item" hidden>holding <strong></strong></span>
     <button class="restart-button" id="restart-game" type="button" aria-label="Restart game" title="Restart game">&#8635;</button>
   </footer>

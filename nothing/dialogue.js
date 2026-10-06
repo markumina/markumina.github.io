@@ -16,7 +16,7 @@ window.NOTHING_DIALOGUE = {
 
   items: {
     deliveryTag: {
-      held: { speaker: "Billi", text: "The old Bellini's delivery tag. Bruno should see it." },
+      held: { speaker: "Billi", text: "An old delivery tag from Bruno's place, from 1978. Let's go show him before he closes." },
       description: { speaker: "Billi", text: "Rain-softened paper from a delivery made to the pump station in 1978." }
     },
     brassToken: {
@@ -115,7 +115,7 @@ window.NOTHING_DIALOGUE = {
 
   market: {
     windows: { speaker: "Billi", text: "Every pie in the window has a little pastry leaf on top." },
-    sign: { speaker: "Mumi", text: "Pie or Die. Seasonal rebranding with a threat." },
+    sign: { speaker: "Mumi", text: "Pie Piper. Somebody crossed out Piper and hung 'to DIE for' underneath." },
     pumpkins: { speaker: "Billi", text: "Three friendly faces and one that has clearly seen the invoices." }
   },
 
@@ -155,8 +155,8 @@ window.NOTHING_DIALOGUE = {
     cupFilled: { speaker: "Nora", text: "One scoop, sweetheart. That cider has opinions." },
     pizzaTrade: [
       { speaker: "Nora", text: "Bruno's pizza? Give me that before the bats form a committee." },
-      { speaker: "Billi", text: "What do I get?" },
-      { speaker: "Nora", text: "This little teal bracelet. Put it on. It suits you, and unlike them, it minds its own business." }
+      { speaker: "Billi", text: "np" },
+      { speaker: "Nora", text: "This is alittle teal bracelet. Put it on. It suits you, and unlike them, it minds its own business." }
     ]
   },
 
