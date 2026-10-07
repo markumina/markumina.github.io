@@ -52,7 +52,7 @@ a:focus-visible {
 .game-title-bar {
   display: grid;
   min-height: 31px;
-  grid-template-columns: minmax(0, 1fr) auto 25px;
+  grid-template-columns: minmax(0, 1fr) auto 31px 25px;
   align-items: center;
   gap: 12px;
   margin: 3px 3px 0;
@@ -109,6 +109,33 @@ a:focus-visible {
   border-color: #404040 #ffffff #ffffff #404040;
 }
 
+.sound-toggle {
+  display: grid;
+  width: 31px;
+  height: 23px;
+  padding: 0;
+  border: 2px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;
+  place-items: center;
+  background: #c0c0c0;
+  color: #172226;
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sound-toggle[aria-pressed="true"] {
+  border-color: #404040 #ffffff #ffffff #404040;
+  background: #9eb0aa;
+  color: #082f35;
+}
+
+.sound-toggle:active {
+  border-color: #404040 #ffffff #ffffff #404040;
+}
+
 .scene-well {
   display: grid;
   min-height: 0;
@@ -144,6 +171,10 @@ a:focus-visible {
   image-rendering: pixelated;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.game-stage[data-scene="pizzeria"] .scene-image {
+  filter: saturate(0.95) brightness(0.99);
 }
 
 .scene-patches {
@@ -196,11 +227,80 @@ a:focus-visible {
 
 .scene-decoration--bridge-banner {
   filter: drop-shadow(1px 2px 0 rgba(7, 12, 24, 0.72));
-  opacity: 0.9;
+  opacity: 0.96;
+  transform: rotate(-11deg);
+  transform-origin: 7% 7%;
 }
 
 .scene-decoration--patch {
   object-fit: fill;
+}
+
+.scene-decoration--tony-window,
+.scene-decoration--tony-window-head {
+  object-fit: fill;
+}
+
+.scene-decoration--tony-window-head {
+  animation: tony-window-peek 420ms steps(4, end) both;
+}
+
+.scene-decoration--pry-bar {
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.72));
+  transform-origin: 84% 8%;
+}
+
+.game-stage.is-three-person-pry .scene-decoration--pry-bar {
+  animation: pry-bar-press 700ms steps(4, end) 2;
+}
+
+.game-stage.is-door-cracked .scene-decoration--pry-bar {
+  transform: rotate(-13deg) translate(-2px, 4px);
+}
+
+.bridge-mouse {
+  position: absolute;
+  z-index: 3;
+  top: 73%;
+  left: 91%;
+  display: block;
+  width: 6%;
+  aspect-ratio: 8 / 3;
+  background: url("assets/mouse-run.svg") left top / 200% 100% no-repeat;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.7));
+  image-rendering: pixelated;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+.bridge-mouse.is-running {
+  animation:
+    bridge-mouse-run 2600ms linear forwards,
+    mouse-run-frame 180ms steps(1, end) infinite;
+}
+
+.trash-can-man {
+  position: absolute;
+  z-index: 3;
+  top: 82%;
+  left: 93%;
+  display: none;
+  width: 6.25%;
+  aspect-ratio: 1;
+  background: url("assets/trash-can-man.svg") left top / 200% 100% no-repeat;
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.72));
+  image-rendering: pixelated;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  will-change: transform;
+}
+
+.game-stage[data-scene="street"] .trash-can-man {
+  display: block;
+}
+
+.trash-can-man.is-strolling {
+  animation: trash-can-stroll 2600ms steps(1, end) both;
 }
 
 .walkers {
@@ -228,7 +328,12 @@ a:focus-visible {
   z-index: 2;
 }
 
+.walker--tony {
+  z-index: 1;
+}
+
 .walker-sprite {
+  --facing: 1;
   display: block;
   width: 100%;
   height: 100%;
@@ -247,16 +352,92 @@ a:focus-visible {
   background-image: url("assets/billi-walk-bracelet.svg");
 }
 
+.bracelet-application {
+  position: absolute;
+  z-index: 3;
+  top: 66.6667%;
+  left: 75%;
+  display: block;
+  width: 6.25%;
+  height: 4.1667%;
+  background: #27c9bd;
+  box-shadow: 0 0 2px rgba(99, 255, 241, 0.72);
+  image-rendering: pixelated;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.walker--billi.is-left .bracelet-application {
+  left: 18.75%;
+}
+
+.walker--billi.is-receiving-bracelet .bracelet-application {
+  animation: bracelet-put-on 900ms steps(7, end) both;
+}
+
 .walker--mumi .walker-sprite {
   background-image: url("assets/mumi-walk.svg");
 }
 
+.walker--tony .walker-sprite {
+  background-image: url("assets/tony-walk.svg");
+}
+
 .walker.is-left .walker-sprite {
+  --facing: -1;
   transform: scaleX(-1);
 }
 
 .walker.is-walking .walker-sprite {
   animation: walk-frame 240ms steps(1, end) infinite;
+}
+
+.walker--billi.is-tripping {
+  z-index: 5;
+}
+
+.walker--billi.is-tripping .walker-sprite {
+  animation: billi-trip 1150ms linear both;
+}
+
+.walker--billi.is-limping.is-walking .walker-sprite {
+  animation: billi-limp 430ms steps(1, end) infinite;
+}
+
+.game-stage.is-bracelet-cutaway {
+  cursor: default;
+}
+
+.game-stage.is-bracelet-cutaway .scene-image,
+.game-stage.is-bracelet-cutaway .scene-patches,
+.game-stage.is-bracelet-cutaway .scene-decorations,
+.game-stage.is-bracelet-cutaway .walkers {
+  transform-origin: var(--bracelet-focus-x, 50%) var(--bracelet-focus-y, 70%);
+  animation: bracelet-camera 2800ms both;
+}
+
+.game-stage.is-bracelet-cutaway .hotspots {
+  pointer-events: none;
+}
+
+.game-stage.is-three-person-pry .hotspots {
+  pointer-events: none;
+}
+
+.game-stage.is-three-person-pry .walker {
+  animation: group-pry-press 700ms steps(4, end) 2;
+}
+
+.game-stage.is-three-person-pry .walker--mumi {
+  animation-delay: 70ms;
+}
+
+.game-stage.is-three-person-pry .walker--tony {
+  animation-delay: 140ms;
+}
+
+.game-stage.is-bracelet-cutaway .object-label {
+  opacity: 0;
 }
 
 .game-stage[data-scene="cosmos"] .walker--billi {
@@ -464,48 +645,79 @@ a:focus-visible {
 .dialogue {
   position: absolute;
   z-index: 7;
-  bottom: 5%;
+  bottom: 4.5%;
   left: 50%;
   display: grid;
-  width: min(720px, 90%);
-  min-height: 80px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  width: min(780px, 92%);
+  min-height: 100px;
+  grid-template-columns: minmax(0, 1fr) 42px;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   margin: 0;
-  padding: 12px 12px 12px 16px;
-  border: 2px solid #2a3e45;
+  padding: 14px 14px 14px 18px;
+  border: 3px solid #8da1a1;
   background: #101920;
   box-shadow:
-    0 0 0 2px #849797,
-    0 0 0 4px #05090c,
-    6px 6px 0 rgba(0, 0, 0, 0.8);
+    inset 0 0 0 2px #05090c,
+    inset 0 0 0 4px #263d46,
+    0 0 0 2px #d3d0bb,
+    0 0 0 5px #05090c,
+    8px 8px 0 rgba(0, 0, 0, 0.82);
   color: #f5eedb;
   cursor: pointer;
   transform: translateX(-50%);
+}
+
+.dialogue::before,
+.dialogue::after {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  content: "";
+  pointer-events: none;
+}
+
+.dialogue::before {
+  top: 6px;
+  left: 6px;
+  border-top: 3px solid #e2b850;
+  border-left: 3px solid #e2b850;
+}
+
+.dialogue::after {
+  right: 6px;
+  bottom: 6px;
+  border-right: 3px solid #4fc1b7;
+  border-bottom: 3px solid #4fc1b7;
 }
 
 .dialogue p {
   display: block;
   min-width: 0;
   margin: 0;
-  padding-left: 10px;
-  border-left: 3px solid #e2b850;
-  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-  font-size: 18px;
+  padding-left: 14px;
+  border-left: 4px solid #e2b850;
+  font-family: "Lucida Sans", "Trebuchet MS", Verdana, Arial, sans-serif;
+  font-size: 21px;
   font-weight: 700;
-  line-height: 1.32;
+  line-height: 1.34;
+  text-shadow: 1px 1px 0 #000000;
 }
 
 .dialogue strong {
-  display: block;
-  margin-bottom: 3px;
-  color: #67d4c8;
-  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-  font-size: 12px;
+  display: table;
+  margin: 0 0 7px;
+  padding: 2px 8px 3px;
+  border: 1px solid #557079;
+  background: #18313a;
+  box-shadow: 2px 2px 0 #05090c;
+  color: #7ce0d5;
+  font-family: "Lucida Sans", "Trebuchet MS", Verdana, Arial, sans-serif;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.1;
   text-transform: uppercase;
+  text-shadow: none;
 }
 
 .dialogue-next,
@@ -527,18 +739,23 @@ a:focus-visible {
 }
 
 .dialogue-next {
-  width: auto;
-  min-width: 88px;
-  height: 34px;
-  padding: 3px 8px;
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 0 3px;
   border-color: #849797 #05090c #05090c #849797;
   background: #263b43;
   color: #f7dfa0;
-  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
-  font-size: 12px;
+  font-family: Georgia, serif;
+  font-size: 31px;
   font-weight: 800;
-  text-transform: uppercase;
-  white-space: nowrap;
+  text-shadow: 1px 1px 0 #000000;
+}
+
+.dialogue-next:hover,
+.dialogue-next:focus-visible {
+  background: #32515a;
+  color: #fff0ba;
 }
 
 .dialogue-next:active,
@@ -549,10 +766,10 @@ a:focus-visible {
 
 .pocket-bar {
   display: flex;
-  min-height: 44px;
+  min-height: 56px;
   align-items: center;
-  gap: 6px;
-  padding: 3px max(5px, env(safe-area-inset-right)) max(3px, env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
+  gap: 8px;
+  padding: 5px max(5px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
   border-top: 1px solid #808080;
   background: #bfc1be;
   color: #111111;
@@ -561,11 +778,18 @@ a:focus-visible {
 
 .pocket-label {
   position: relative;
+  display: grid;
+  min-height: 38px;
   flex: 0 0 auto;
-  padding-left: 10px;
+  align-items: center;
+  padding: 0 11px 0 19px;
+  border: 2px solid;
+  border-color: #edf0e8 #41484b #41484b #edf0e8;
+  background: #d0d1cc;
+  box-shadow: 1px 1px 0 #757875;
   color: #18353b;
   font-family: "Courier New", monospace;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -573,11 +797,11 @@ a:focus-visible {
 .pocket-label::before {
   position: absolute;
   top: 50%;
-  left: 1px;
-  width: 3px;
-  height: 3px;
+  left: 7px;
+  width: 4px;
+  height: 4px;
   background: #c89628;
-  box-shadow: 4px -5px 0 #2c827e, 4px 5px 0 #2c827e;
+  box-shadow: 5px -7px 0 #2c827e, 5px 7px 0 #2c827e;
   content: "";
   transform: translateY(-50%);
   animation: pocket-twinkle 2800ms steps(2, end) infinite;
@@ -586,17 +810,17 @@ a:focus-visible {
 .inventory {
   position: relative;
   display: flex;
-  min-height: 32px;
+  min-height: 42px;
   min-width: 0;
   flex: 1;
   align-items: center;
-  gap: 2px;
-  padding: 2px 5px;
+  gap: 5px;
+  padding: 4px 7px;
   border: 2px solid;
   border-color: #41484b #edf0e8 #edf0e8 #41484b;
   overflow-x: auto;
-  background: #101720;
-  box-shadow: inset 0 0 0 1px #05090d;
+  background: #0d151d;
+  box-shadow: inset 0 0 0 2px #20333b;
   scrollbar-width: thin;
 }
 
@@ -621,45 +845,63 @@ a:focus-visible {
 }
 
 .inventory-empty {
+  padding: 0 7px;
   color: #9ba9a7;
   font-family: "Courier New", monospace;
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .inventory-item {
-  min-height: 28px;
+  min-height: 34px;
   flex: 0 0 auto;
-  padding: 3px 7px;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: transparent;
+  padding: 5px 10px;
+  border: 2px solid;
+  border-color: #60747a #080d10 #080d10 #60747a;
+  background: #182831;
+  box-shadow: inset 0 0 0 1px #2b4149;
   color: #e5e0d2;
-  font-family: Verdana, Arial, sans-serif;
-  font-size: 11px;
+  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+  font-size: 14px;
   font-weight: bold;
   white-space: nowrap;
   cursor: pointer;
 }
 
+.inventory-item::before {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 8px 1px 1px;
+  background: #d5aa4e;
+  content: "";
+  transform: rotate(45deg);
+}
+
 .inventory-item:hover,
 .inventory-item:focus-visible {
-  border-bottom-color: #66c9bf;
-  background: #1b2934;
+  border-color: #78d7cd #102126 #102126 #78d7cd;
+  background: #203740;
   outline: 1px dotted #d7e3df;
   outline-offset: -2px;
 }
 
 .inventory-item[aria-pressed="true"] {
-  border-bottom-color: #f0c94f;
-  background: #17313a;
+  border-color: #8c742e #f0d16b #f0d16b #8c742e;
+  background: #214149;
   color: #fff0b3;
+  box-shadow: inset 2px 2px 0 #091216;
+}
+
+.inventory-item[aria-pressed="true"]::before {
+  background: #63d5ca;
 }
 
 .held-item {
   flex: 0 0 auto;
   color: #333333;
   font-family: "Courier New", monospace;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
@@ -669,7 +911,7 @@ a:focus-visible {
 
 .restart-button {
   width: 34px;
-  height: 31px;
+  height: 39px;
   flex: 0 0 auto;
   font-size: 20px;
 }
@@ -775,6 +1017,221 @@ a:focus-visible {
   }
 }
 
+@keyframes mouse-run-frame {
+  0%,
+  49% {
+    background-position: left top;
+  }
+
+  50%,
+  100% {
+    background-position: right top;
+  }
+}
+
+@keyframes bridge-mouse-run {
+  0% {
+    top: 73%;
+    left: 92%;
+    transform: translate(-50%, -100%);
+  }
+
+  24% {
+    top: 71.5%;
+    left: 70%;
+  }
+
+  48% {
+    top: 74%;
+    left: 47%;
+  }
+
+  72% {
+    top: 71%;
+    left: 24%;
+  }
+
+  100% {
+    top: 73%;
+    left: -6%;
+    transform: translate(-50%, -100%);
+  }
+}
+
+@keyframes trash-can-stroll {
+  0%,
+  100% {
+    background-position: left top;
+    transform: translate(-50%, -100%) translate(0, 0);
+  }
+
+  12% {
+    background-position: right top;
+    transform: translate(-50%, -100%) translate(-45%, -3%);
+  }
+
+  24% {
+    background-position: left top;
+    transform: translate(-50%, -100%) translate(-90%, 0);
+  }
+
+  36% {
+    background-position: right top;
+    transform: translate(-50%, -100%) translate(-135%, -3%);
+  }
+
+  48%,
+  58% {
+    background-position: left top;
+    transform: translate(-50%, -100%) translate(-180%, 0);
+  }
+
+  70% {
+    background-position: right top;
+    transform: translate(-50%, -100%) translate(-135%, -3%);
+  }
+
+  82% {
+    background-position: left top;
+    transform: translate(-50%, -100%) translate(-75%, 0);
+  }
+
+  92% {
+    background-position: right top;
+    transform: translate(-50%, -100%) translate(-35%, -3%);
+  }
+}
+
+@keyframes bracelet-camera {
+  0% {
+    transform: scale(1);
+    animation-timing-function: cubic-bezier(0.22, 0.72, 0.2, 1);
+  }
+
+  24%,
+  68% {
+    transform: translate(var(--bracelet-shift-x, 0), var(--bracelet-shift-y, 0)) scale(3.35);
+  }
+
+  69% {
+    animation-timing-function: cubic-bezier(0.45, 0, 0.25, 1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bracelet-put-on {
+  0% {
+    opacity: 0;
+    transform: translate(750%, -500%) scale(2);
+  }
+
+  14% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.25);
+  }
+
+  84% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes billi-trip {
+  0% {
+    background-position: left top;
+    transform: scaleX(var(--facing)) translate(0, 0) rotate(0deg);
+  }
+
+  18% {
+    transform: scaleX(var(--facing)) translate(2%, -7%) rotate(220deg);
+  }
+
+  40% {
+    background-position: right top;
+    transform: scaleX(var(--facing)) translate(-3%, -5%) rotate(480deg);
+  }
+
+  64% {
+    transform: scaleX(var(--facing)) translate(3%, 3%) rotate(720deg);
+  }
+
+  78%,
+  86% {
+    background-position: left top;
+    transform: scaleX(var(--facing)) translate(1%, 9%) rotate(900deg) scaleY(0.62);
+  }
+
+  100% {
+    transform: scaleX(var(--facing)) translate(0, 0) rotate(1080deg) scaleY(1);
+  }
+}
+
+@keyframes billi-limp {
+  0%,
+  39% {
+    background-position: left top;
+    transform: scaleX(var(--facing)) translateY(3%) rotate(-10deg) scaleY(0.94);
+  }
+
+  40%,
+  67% {
+    background-position: right top;
+    transform: scaleX(var(--facing)) translateY(-11%) rotate(7deg) scaleY(1.04);
+  }
+
+  68%,
+  100% {
+    background-position: right top;
+    transform: scaleX(var(--facing)) translateY(-2%) rotate(2deg) scaleY(0.98);
+  }
+}
+
+@keyframes tony-window-peek {
+  0% {
+    opacity: 0;
+    transform: translateY(24%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pry-bar-press {
+  0%,
+  100% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+
+  50% {
+    transform: rotate(-13deg) translate(-2px, 4px);
+  }
+}
+
+@keyframes group-pry-press {
+  0%,
+  100% {
+    transform: translate(-50%, -100%) translateY(0);
+  }
+
+  50% {
+    transform: translate(-50%, -100%) translateY(5px);
+  }
+}
+
 @keyframes loader-blink {
   0%,
   49% {
@@ -822,7 +1279,7 @@ a:focus-visible {
 
 @media (max-width: 620px) {
   .game-title-bar {
-    grid-template-columns: minmax(0, 1fr) 25px;
+    grid-template-columns: minmax(0, 1fr) 31px 25px;
     gap: 7px;
   }
 
@@ -832,30 +1289,32 @@ a:focus-visible {
 
   .dialogue {
     bottom: 4%;
-    width: 92%;
-    min-height: 70px;
+    width: 94%;
+    min-height: 86px;
+    grid-template-columns: minmax(0, 1fr) 38px;
     gap: 8px;
-    padding: 9px 8px 9px 12px;
+    padding: 10px 9px 10px 12px;
   }
 
   .dialogue p {
     display: block;
     padding-left: 8px;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.28;
   }
 
   .dialogue strong {
     display: block;
     margin-bottom: 3px;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.2;
   }
 
   .dialogue-next {
-    min-width: 72px;
-    padding-inline: 5px;
-    font-size: 11px;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    font-size: 28px;
   }
 
   .item-notice {
@@ -871,8 +1330,9 @@ a:focus-visible {
   }
 
   .inventory-item {
-    min-height: 32px;
-    padding-inline: 8px;
+    min-height: 36px;
+    padding-inline: 9px;
+    font-size: 13px;
   }
 
   .object-label {
@@ -939,7 +1399,7 @@ a:focus-visible {
   }
 
   .pocket-bar {
-    min-height: 34px;
+    min-height: 42px;
     grid-column: 1;
     grid-row: 3;
   }
@@ -950,9 +1410,9 @@ a:focus-visible {
   }
 
   .inventory-item {
-    min-height: 27px;
-    padding: 2px 5px;
-    font-size: 10px;
+    min-height: 32px;
+    padding: 3px 7px;
+    font-size: 12px;
   }
 
   .restart-button {
@@ -966,9 +1426,24 @@ a:focus-visible {
   .inventory::before,
   .pocket-label::before,
   .hotspot[data-arrow]::before,
+  .walker--billi.is-tripping .walker-sprite,
+  .walker--billi.is-limping.is-walking .walker-sprite,
   .walker.is-walking .walker-sprite,
   .game-stage[data-scene="cosmos"] .walker,
   .scene-loader span {
+    animation: none;
+  }
+
+  .game-stage.is-bracelet-cutaway .scene-image,
+  .game-stage.is-bracelet-cutaway .scene-patches,
+  .game-stage.is-bracelet-cutaway .scene-decorations,
+  .game-stage.is-bracelet-cutaway .walkers,
+  .walker--billi.is-receiving-bracelet .bracelet-application,
+  .bridge-mouse.is-running,
+  .trash-can-man.is-strolling,
+  .scene-decoration--tony-window-head,
+  .game-stage.is-three-person-pry .scene-decoration--pry-bar,
+  .game-stage.is-three-person-pry .walker {
     animation: none;
   }
 }

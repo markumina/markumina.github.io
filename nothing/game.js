@@ -1,5 +1,14 @@
 const SAVE_KEY = "nothing-save-v1";
 const SCRIPT = window.NOTHING_DIALOGUE;
+const SOUND = window.NOTHING_SOUND || {
+  syncScene: function () {},
+  step: function () {},
+  trip: function () {},
+  bracelet: function () {},
+  mouse: function () {},
+  trashCan: function () {},
+  transition: function () {}
+};
 
 const itemDetails = {
   deliveryTag: {
@@ -61,7 +70,7 @@ const itemDetails = {
 
 const sceneDefinitions = {
   street: {
-    image: "assets/scene-street.png",
+    image: "assets/scene-street-crisp.png",
     alt: "A quiet riverside street with a pizzeria and a path leading down toward a bridge",
     location: "Willow Street / 11:47 PM",
     start: [52, 85],
@@ -70,8 +79,10 @@ const sceneDefinitions = {
       { action: "streetUtility", label: "utility box", left: 0, top: 50, width: 12, height: 30, walk: [11, 82] },
       { action: "riverStone", label: "round stone", left: 8, top: 66, width: 9, height: 12, walk: [15, 83] },
       { action: "bridgePath", label: "riverside path", left: 11, top: 44, width: 37, height: 45, walk: [26, 80], kind: "exit", arrow: "up-right", arrowX: 25, arrowY: 66 },
+      { action: "upperWindows", label: "upper windows", left: 52, top: 9, width: 47, height: 20, walk: [79, 75] },
       { action: "pizzeriaDoor", label: "Bellini's Pizza", left: 60, top: 29, width: 38, height: 49, walk: [82, 82], kind: "exit", arrow: "right", arrowX: 76, arrowY: 62 },
       { action: "marketPath", label: "shops farther up Willow Street", left: 88, top: 79, width: 12, height: 15, walk: [93, 86], kind: "exit", arrow: "right", arrowX: 48, arrowY: 42 },
+      { action: "trashCanMan", label: "man in a trash can", left: 85, top: 58, width: 15, height: 25, walk: [84, 78] },
       { action: "lowerWillowPath", label: "lower Willow Street", left: 37, top: 82, width: 18, height: 14, walk: [46, 91], kind: "exit", arrow: "down-left", arrowX: 45, arrowY: 62 }
     ]
   },
@@ -85,6 +96,7 @@ const sceneDefinitions = {
       { action: "lowerWillowBack", label: "Willow Street", left: 82, top: 43, width: 18, height: 47, walk: [91, 82], kind: "exit", arrow: "up-right", arrowX: 67, arrowY: 62 },
       { action: "lowerWillowForward", label: "road past the last houses", left: 0, top: 43, width: 18, height: 43, walk: [8, 82], kind: "exit", arrow: "down-left", arrowX: 48, arrowY: 68 },
       { action: "lastPorch", label: "lit porch", left: 67, top: 25, width: 25, height: 39, walk: [77, 74] },
+      { action: "upperWindows", label: "upper windows", left: 86, top: 16, width: 11, height: 23, walk: [88, 75] },
       { action: "shutteredShop", label: "shuttered shop", left: 22, top: 34, width: 23, height: 38, walk: [35, 76] },
       { action: "vacantLot", label: "overgrown vacant lot", left: 43, top: 38, width: 24, height: 34, walk: [55, 76] }
     ]
@@ -146,13 +158,24 @@ const sceneDefinitions = {
     start: [40, 84],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
     decorations: [
-      { asset: "assets/bridge-halloween-banner.svg", left: 2, top: 1, width: 24, height: 13, className: "scene-decoration--bridge-banner" }
-    ],
-    patches: [
+      { asset: "assets/bridge-halloween-banner.svg", left: 2, top: 8.5, width: 29, height: 12, className: "scene-decoration--bridge-banner" },
       {
-        target: [328, 157, 19, 15],
-        source: [304, 157],
+        asset: "assets/bridge-step-no-paper.png",
+        left: 85.4167,
+        top: 61.3281,
+        width: 4.9479,
+        height: 5.8594,
+        className: "scene-decoration--patch",
         when: function () { return state.flags.deliveryTagFound; }
+      },
+      {
+        asset: "assets/bridge-pry-bar.svg",
+        left: 77,
+        top: 49,
+        width: 14,
+        height: 24,
+        className: "scene-decoration--pry-bar",
+        when: function () { return state.flags.pryBarWedged; }
       }
     ],
     hotspots: [
@@ -164,7 +187,7 @@ const sceneDefinitions = {
     ]
   },
   pizzeria: {
-    image: "assets/scene-pizzeria.png",
+    image: "assets/scene-pizzeria-crisp.png",
     alt: "A modest family pizzeria with Bruno behind the counter",
     location: "Bellini's Pizza",
     start: [20, 87],
@@ -172,9 +195,24 @@ const sceneDefinitions = {
     hotspots: [
       { action: "pizzeriaExit", label: "Willow Street", left: 14, top: 72, width: 20, height: 20, walk: [20, 91], kind: "exit", arrow: "down-left", arrowX: 50, arrowY: 80 },
       { action: "townPhotos", label: "old town photographs", left: 5, top: 13, width: 31, height: 30, walk: [28, 73] },
+      { action: "restroomDoor", label: "restroom", left: 35.5, top: 18, width: 8.5, height: 43, walk: [40, 73], kind: "exit", arrow: "up", arrowX: 51, arrowY: 77 },
       { action: "pizzaCounter", label: "pizza slices", left: 43, top: 39, width: 24, height: 17, walk: [58, 72] },
       { action: "bruno", label: "Bruno", left: 66, top: 23, width: 17, height: 27, walk: [68, 72] },
       { action: "backroomDoor", label: "back room", left: 86, top: 19, width: 14, height: 52, walk: [90, 78], kind: "exit", arrow: "right" }
+    ]
+  },
+  restroom: {
+    image: "assets/scene-pizzeria-restroom.png",
+    alt: "A small tiled restroom inside Bellini's Pizza with a sink, mirror, and toilet",
+    location: "Bellini's / Restroom",
+    start: [15, 86],
+    walk: { minX: 6, maxX: 94, minY: 72, maxY: 91 },
+    hotspots: [
+      { action: "restroomExit", label: "back to Bellini's", left: 0, top: 10, width: 20, height: 77, walk: [9, 82], kind: "exit", arrow: "left", arrowX: 55, arrowY: 72 },
+      { action: "restroomGarland", label: "paper pumpkin garland", left: 17, top: 12, width: 20, height: 24, walk: [28, 73] },
+      { action: "restroomMirror", label: "mirror", left: 39, top: 14, width: 20, height: 30, walk: [49, 74] },
+      { action: "restroomSink", label: "sink", left: 37, top: 36, width: 25, height: 32, walk: [50, 79] },
+      { action: "restroomToilet", label: "toilet", left: 70, top: 43, width: 26, height: 42, walk: [79, 82] }
     ]
   },
   market: {
@@ -184,11 +222,31 @@ const sceneDefinitions = {
     start: [12, 85],
     walk: { minX: 5, maxX: 95, minY: 72, maxY: 91 },
     decorations: [
-      { asset: "assets/pied-piper-sign.svg", left: 75, top: 15.5, width: 16, height: 20, className: "scene-decoration--sign" }
+      { asset: "assets/pied-piper-sign.svg", left: 75, top: 15.5, width: 16, height: 20, className: "scene-decoration--sign" },
+      {
+        asset: "assets/market-window-open.svg",
+        left: 28.55,
+        top: 27.2,
+        width: 3.8,
+        height: 11.3,
+        className: "scene-decoration--tony-window",
+        when: function () { return state.flags.tonyWindowOpen; }
+      },
+      {
+        asset: "assets/tony-window-head.svg",
+        left: 28.55,
+        top: 27.2,
+        width: 3.8,
+        height: 11.3,
+        className: "scene-decoration--tony-window-head",
+        when: function () { return state.flags.tonyAtWindow; }
+      }
     ],
     hotspots: [
       { action: "marketBack", label: "Willow Street", left: 0, top: 35, width: 14, height: 38, walk: [8, 82], kind: "exit", arrow: "left", arrowX: 42, arrowY: 68 },
+      { action: "tonyWindow", label: "lit upstairs window", left: 25, top: 22, width: 11, height: 24, walk: [31, 78] },
       { action: "piperWindows", label: "Pie Piper windows", left: 43, top: 38, width: 29, height: 34, walk: [58, 78] },
+      { action: "upperWindows", label: "upper windows", left: 45, top: 12, width: 31, height: 24, walk: [65, 76] },
       { action: "piperSign", label: "altered Pie Piper sign", left: 74, top: 16, width: 18, height: 20, walk: [80, 77] },
       { action: "piperDoor", label: "Pie Piper", left: 72, top: 38, width: 16, height: 39, walk: [78, 82], kind: "exit", arrow: "up", arrowX: 35, arrowY: 78 },
       { action: "marketPumpkins", label: "jack-o'-lanterns", left: 64, top: 62, width: 34, height: 19, walk: [79, 82] }
@@ -202,31 +260,22 @@ const sceneDefinitions = {
     walk: { minX: 6, maxX: 94, minY: 68, maxY: 91 },
     decorations: [
       {
-        asset: "assets/piper-table-no-cups.png",
-        left: 32.5521,
-        top: 42.9688,
-        width: 13.6719,
-        height: 12.6953,
-        className: "scene-decoration--patch",
-        when: function () { return state.flags.cupTaken && !state.flags.cookieTaken; }
-      },
-      {
         asset: "assets/piper-table-no-cookies.png",
         left: 32.5521,
         top: 42.9688,
         width: 13.6719,
         height: 12.6953,
         className: "scene-decoration--patch",
-        when: function () { return state.flags.cookieTaken && !state.flags.cupTaken; }
+        when: function () { return state.flags.cookieTaken; }
       },
       {
-        asset: "assets/piper-table-empty.png",
-        left: 32.5521,
-        top: 42.9688,
-        width: 13.6719,
-        height: 12.6953,
+        asset: "assets/piper-one-cup-less.png",
+        left: 41.4063,
+        top: 43.3594,
+        width: 4.1667,
+        height: 7.0313,
         className: "scene-decoration--patch",
-        when: function () { return state.flags.cupTaken && state.flags.cookieTaken; }
+        when: function () { return state.flags.cupTaken; }
       }
     ],
     hotspots: [
@@ -377,6 +426,15 @@ function freshState() {
       deliveryTagFound: false,
       tokenFound: false,
       pizzeriaVisited: false,
+      restroomVisited: false,
+      trashCanGreetingHeard: false,
+      tonyMet: false,
+      tonyWindowOpen: false,
+      tonyAtWindow: false,
+      tonyFollowing: false,
+      tonyCasualScenesRemaining: 0,
+      tonyHelpingDoor: false,
+      tonyHelpedDoor: false,
       brunoOfferHeard: false,
       pizzaTaken: false,
       braceletWorn: false,
@@ -395,6 +453,8 @@ function freshState() {
       fuseFound: false,
       fuseInstalled: false,
       lensTaken: false,
+      pryBarWedged: false,
+      pryBarTwoPersonAttempted: false,
       pumpDoorOpen: false,
       pumphouseVisited: false,
       hatchRevealed: false,
@@ -450,11 +510,21 @@ let dialogueDone = null;
 let delayedDialogueTimer = null;
 let pizzaWrapTimer = null;
 let itemNoticeTimer = null;
+let braceletAnimationTimers = [];
+let bridgeMouseTimer = null;
+let trashCanStrollTimer = null;
+let doorPryTimer = null;
 let walkRequest = 0;
 let batRemarkIndex = 0;
+let trashCanRemarkIndex = 0;
+let billiTripTimer = null;
+let billiLimpWalks = 0;
+let walksUntilBilliTrips = 18 + Math.floor(Math.random() * 13);
+let previousTripRemark = "";
 let positions = {
   billi: { x: 52, y: 85 },
-  mumi: { x: 47, y: 86 }
+  mumi: { x: 47, y: 86 },
+  tony: { x: 42, y: 87 }
 };
 
 const gameStage = document.querySelector("#game-stage");
@@ -462,6 +532,8 @@ const sceneImage = document.querySelector("#scene-image");
 const scenePatches = document.querySelector("#scene-patches");
 const sceneDecorations = document.querySelector("#scene-decorations");
 const sceneLoader = document.querySelector("#scene-loader");
+const bridgeMouse = document.querySelector("#bridge-mouse");
+const trashCanMan = document.querySelector("#trash-can-man");
 const hotspots = document.querySelector("#hotspots");
 const inventory = document.querySelector("#inventory");
 const heldItem = document.querySelector("#held-item");
@@ -479,6 +551,7 @@ const playAgain = document.querySelector("#play-again");
 const restartGame = document.querySelector("#restart-game");
 const billi = document.querySelector("#billi");
 const mumi = document.querySelector("#mumi");
+const tony = document.querySelector("#tony");
 
 function sceneValue(value) {
   return typeof value === "function" ? value() : value;
@@ -744,25 +817,30 @@ function placeWalker(element, position) {
 
 function renderWalkers() {
   billi.classList.toggle("has-bracelet", state.flags.braceletWorn);
+  tony.hidden = !state.flags.tonyFollowing;
   placeWalker(billi, positions.billi);
   placeWalker(mumi, positions.mumi);
+  if (state.flags.tonyFollowing) placeWalker(tony, positions.tony);
 }
 
 function resetWalkers(scene) {
   walkRequest += 1;
   billi.classList.remove("is-walking", "is-left");
   mumi.classList.remove("is-walking", "is-left");
+  tony.classList.remove("is-walking", "is-left");
   const start = sceneDefinitions[scene].start;
 
   if (scene === "cosmos") {
     positions = {
       billi: { x: start[0], y: start[1] },
-      mumi: { x: start[0] - 10, y: start[1] + 6 }
+      mumi: { x: start[0] - 10, y: start[1] + 6 },
+      tony: { x: start[0] - 16, y: start[1] + 8 }
     };
   } else {
     positions = {
       billi: { x: start[0], y: start[1] },
-      mumi: { x: start[0] - 5, y: start[1] + 1 }
+      mumi: { x: start[0] - 5, y: start[1] + 1 },
+      tony: { x: start[0] - 10, y: start[1] + 2 }
     };
   }
 
@@ -773,7 +851,241 @@ function setFacing(element, left) {
   element.classList.toggle("is-left", left);
 }
 
+function stopBraceletAnimation() {
+  braceletAnimationTimers.forEach(function (timer) { window.clearTimeout(timer); });
+  braceletAnimationTimers = [];
+  gameStage.classList.remove("is-bracelet-cutaway");
+  gameStage.style.removeProperty("--bracelet-focus-x");
+  gameStage.style.removeProperty("--bracelet-focus-y");
+  gameStage.style.removeProperty("--bracelet-shift-x");
+  gameStage.style.removeProperty("--bracelet-shift-y");
+  billi.classList.remove("is-receiving-bracelet");
+}
+
+function clearBridgeMouse() {
+  if (bridgeMouseTimer !== null) {
+    window.clearTimeout(bridgeMouseTimer);
+    bridgeMouseTimer = null;
+  }
+  if (!bridgeMouse) return;
+  bridgeMouse.classList.remove("is-running");
+  bridgeMouse.hidden = true;
+}
+
+function runBridgeMouse() {
+  clearBridgeMouse();
+  bridgeMouseTimer = window.setTimeout(function () {
+    bridgeMouseTimer = null;
+    if (!bridgeMouse || state.scene !== "bridge") return;
+    bridgeMouse.hidden = false;
+    void bridgeMouse.offsetWidth;
+    bridgeMouse.classList.add("is-running");
+    SOUND.mouse();
+    bridgeMouseTimer = window.setTimeout(clearBridgeMouse, 2700);
+  }, 650);
+}
+
+function clearTrashCanStroll() {
+  if (trashCanStrollTimer !== null) {
+    window.clearTimeout(trashCanStrollTimer);
+    trashCanStrollTimer = null;
+  }
+  if (trashCanMan) trashCanMan.classList.remove("is-strolling");
+}
+
+function scheduleTrashCanStroll(firstWait) {
+  clearTrashCanStroll();
+  if (!trashCanMan || state.scene !== "street") return;
+
+  const delay = firstWait
+    ? 4500 + Math.random() * 5000
+    : 12000 + Math.random() * 14000;
+
+  trashCanStrollTimer = window.setTimeout(function () {
+    trashCanStrollTimer = null;
+    if (state.scene !== "street") return;
+    trashCanMan.classList.add("is-strolling");
+    SOUND.trashCan();
+    trashCanStrollTimer = window.setTimeout(function () {
+      trashCanStrollTimer = null;
+      trashCanMan.classList.remove("is-strolling");
+      scheduleTrashCanStroll(false);
+    }, 2650);
+  }, delay);
+}
+
+function syncTrashCanStroll() {
+  if (state.scene !== "street") {
+    clearTrashCanStroll();
+    return;
+  }
+  if (trashCanStrollTimer === null && !trashCanMan.classList.contains("is-strolling")) {
+    scheduleTrashCanStroll(true);
+  }
+}
+
+function clearDoorPryAnimation() {
+  if (doorPryTimer !== null) {
+    window.clearTimeout(doorPryTimer);
+    doorPryTimer = null;
+  }
+  gameStage.classList.remove("is-three-person-pry", "is-door-cracked");
+}
+
+function startTonyFollowing(helpingDoor) {
+  const bounds = sceneDefinitions[state.scene].walk;
+  state.flags.tonyFollowing = true;
+  state.flags.tonyAtWindow = false;
+  state.flags.tonyHelpingDoor = helpingDoor;
+  state.flags.tonyCasualScenesRemaining = helpingDoor ? 0 : 3;
+  positions.tony = {
+    x: clamp(positions.mumi.x - 5, bounds.minX, bounds.maxX),
+    y: clamp(positions.mumi.y + 1, bounds.minY, bounds.maxY)
+  };
+  saveState();
+  renderSceneDecorations();
+  renderWalkers();
+}
+
+function prepareTonyTransition(lines, onDone) {
+  const nextLines = lines ? lines.slice() : [];
+  let nextDone = onDone;
+
+  if (
+    state.flags.tonyFollowing &&
+    !state.flags.tonyHelpingDoor &&
+    state.flags.tonyCasualScenesRemaining > 0
+  ) {
+    state.flags.tonyCasualScenesRemaining -= 1;
+
+    if (state.flags.tonyCasualScenesRemaining === 0) {
+      nextLines.push(...SCRIPT.tony.microwaveDeparture);
+      nextDone = function () {
+        state.flags.tonyFollowing = false;
+        state.flags.tonyAtWindow = true;
+        saveState();
+        renderWalkers();
+        renderSceneDecorations();
+        if (onDone) onDone();
+      };
+    }
+  }
+
+  return { lines: nextLines, onDone: nextDone };
+}
+
+function crackPumpDoorWithTony() {
+  if (doorPryTimer !== null) return;
+  walkRequest += 1;
+  positions = {
+    billi: { x: 81, y: 79 },
+    mumi: { x: 86, y: 80 },
+    tony: { x: 90, y: 79 }
+  };
+  setFacing(billi, false);
+  setFacing(mumi, false);
+  setFacing(tony, true);
+  renderWalkers();
+  gameStage.classList.add("is-three-person-pry");
+
+  const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 450 : 1500;
+  doorPryTimer = window.setTimeout(function () {
+    doorPryTimer = null;
+    gameStage.classList.remove("is-three-person-pry");
+    gameStage.classList.add("is-door-cracked");
+    state.flags.pumpDoorOpen = true;
+    state.flags.tonyHelpedDoor = true;
+    saveState();
+
+    playDialogue(SCRIPT.bridge.doorCracked, function () {
+      state.flags.tonyFollowing = false;
+      state.flags.tonyHelpingDoor = false;
+      state.flags.tonyAtWindow = true;
+      saveState();
+      clearDoorPryAnimation();
+      enterPumphouse();
+    });
+  }, duration);
+}
+
+function playBraceletAnimation() {
+  stopBraceletAnimation();
+  walkRequest += 1;
+  billi.classList.remove("is-walking", "is-tripping");
+  mumi.classList.remove("is-walking");
+  tony.classList.remove("is-walking");
+  hideObjectLabel();
+
+  const focusY = clamp(positions.billi.y - 3.5, 10, 90);
+  gameStage.style.setProperty("--bracelet-focus-x", positions.billi.x + "%");
+  gameStage.style.setProperty("--bracelet-focus-y", focusY + "%");
+  gameStage.style.setProperty("--bracelet-shift-x", clamp(50 - positions.billi.x, -35, 35) + "%");
+  gameStage.style.setProperty("--bracelet-shift-y", clamp(61 - focusY, -24, 24) + "%");
+  billi.classList.remove("has-bracelet");
+  void gameStage.offsetWidth;
+  gameStage.classList.add("is-bracelet-cutaway");
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const revealDelay = reducedMotion ? 120 : 690;
+  const finishDelay = reducedMotion ? 700 : 2860;
+
+  braceletAnimationTimers.push(window.setTimeout(function () {
+    billi.classList.add("has-bracelet", "is-receiving-bracelet");
+    SOUND.bracelet();
+  }, revealDelay));
+
+  braceletAnimationTimers.push(window.setTimeout(function () {
+    stopBraceletAnimation();
+    billi.classList.add("has-bracelet");
+  }, finishDelay));
+}
+
+function chooseBilliTripRemark() {
+  const outdoorScenes = ["street", "lowerWillow", "woodline", "carGraveyard", "riverside", "bridge", "market"];
+  const remarks = SCRIPT.movement.billiTrips;
+  const sceneRemarks = outdoorScenes.includes(state.scene) ? remarks.outside : remarks.inside;
+  const choices = remarks.anywhere.concat(sceneRemarks).filter(function (line) {
+    return line.text !== previousTripRemark;
+  });
+  const line = choices[Math.floor(Math.random() * choices.length)];
+  previousTripRemark = line.text;
+  return line;
+}
+
+function shouldBilliTrip(distance) {
+  if (distance < 8 || billiLimpWalks > 0) return false;
+  walksUntilBilliTrips -= 1;
+  if (walksUntilBilliTrips > 0) return false;
+  walksUntilBilliTrips = 24 + Math.floor(Math.random() * 19);
+  return true;
+}
+
+function tripBilli(request, onRecovered) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const duration = reducedMotion ? 350 : 1150;
+  const remark = chooseBilliTripRemark();
+
+  billi.classList.remove("is-walking", "is-limping");
+  mumi.classList.remove("is-walking");
+  tony.classList.remove("is-walking");
+  billi.classList.add("is-tripping");
+  SOUND.trip(state.scene);
+  showItemNotice(remark.speaker, remark.text);
+
+  billiTripTimer = window.setTimeout(function () {
+    billiTripTimer = null;
+    if (request !== walkRequest) return;
+    billi.classList.remove("is-tripping");
+    billi.classList.add("is-limping", "is-walking");
+    mumi.classList.add("is-walking");
+    if (state.flags.tonyFollowing) tony.classList.add("is-walking");
+    billiLimpWalks = 2;
+    onRecovered();
+  }, duration);
+}
+
 function walkTo(x, y, onArrival) {
+  if (billiTripTimer !== null) return;
   if (state.scene === "cosmos") {
     if (onArrival) onArrival();
     return;
@@ -789,13 +1101,20 @@ function walkTo(x, y, onArrival) {
     x: clamp(target.x - direction * 5, bounds.minX, bounds.maxX),
     y: clamp(target.y + 1, bounds.minY, bounds.maxY)
   };
+  const tonyTarget = {
+    x: clamp(target.x - direction * 10, bounds.minX, bounds.maxX),
+    y: clamp(target.y + 2, bounds.minY, bounds.maxY)
+  };
   const billiStart = { ...positions.billi };
   const mumiStart = { ...positions.mumi };
+  const tonyStart = { ...positions.tony };
   const distance = Math.hypot(target.x - billiStart.x, (target.y - billiStart.y) * 1.5);
+  const tripAt = shouldBilliTrip(distance) ? 0.34 + Math.random() * 0.34 : null;
 
   if (distance < 0.8) {
     positions.billi = target;
     positions.mumi = mumiTarget;
+    if (state.flags.tonyFollowing) positions.tony = tonyTarget;
     renderWalkers();
     if (onArrival) onArrival();
     return;
@@ -804,15 +1123,24 @@ function walkTo(x, y, onArrival) {
   walkRequest += 1;
   const request = walkRequest;
   const duration = clamp(distance * 34, 260, 1900);
-  const startTime = performance.now();
+  let progress = 0;
+  let previousFrameTime = performance.now();
+  let lastFootstepTime = previousFrameTime - 300;
+  let hasTripped = false;
   setFacing(billi, direction < 0);
   setFacing(mumi, direction < 0);
+  setFacing(tony, direction < 0);
   billi.classList.add("is-walking");
   mumi.classList.add("is-walking");
+  if (state.flags.tonyFollowing) tony.classList.add("is-walking");
 
   function frame(now) {
     if (request !== walkRequest) return;
-    const progress = Math.min(1, (now - startTime) / duration);
+    const frameDuration = Math.min(80, Math.max(0, now - previousFrameTime));
+    const isLimping = billi.classList.contains("is-limping");
+    const walkingSpeed = isLimping ? 0.84 : 1;
+    previousFrameTime = now;
+    progress = Math.min(1, progress + (frameDuration / duration) * walkingSpeed);
     positions.billi = {
       x: billiStart.x + (target.x - billiStart.x) * progress,
       y: billiStart.y + (target.y - billiStart.y) * progress
@@ -821,7 +1149,29 @@ function walkTo(x, y, onArrival) {
       x: mumiStart.x + (mumiTarget.x - mumiStart.x) * progress,
       y: mumiStart.y + (mumiTarget.y - mumiStart.y) * progress
     };
+    if (state.flags.tonyFollowing) {
+      positions.tony = {
+        x: tonyStart.x + (tonyTarget.x - tonyStart.x) * progress,
+        y: tonyStart.y + (tonyTarget.y - tonyStart.y) * progress
+      };
+    }
     renderWalkers();
+
+    const footstepInterval = isLimping ? 390 : 275;
+    if (now - lastFootstepTime >= footstepInterval) {
+      SOUND.step(state.scene, isLimping);
+      lastFootstepTime = now;
+    }
+
+    if (tripAt !== null && !hasTripped && progress >= tripAt && progress < 1) {
+      hasTripped = true;
+      tripBilli(request, function () {
+        previousFrameTime = performance.now();
+        lastFootstepTime = previousFrameTime;
+        window.requestAnimationFrame(frame);
+      });
+      return;
+    }
 
     if (progress < 1) {
       window.requestAnimationFrame(frame);
@@ -830,6 +1180,11 @@ function walkTo(x, y, onArrival) {
 
     billi.classList.remove("is-walking");
     mumi.classList.remove("is-walking");
+    tony.classList.remove("is-walking");
+    if (billiLimpWalks > 0) {
+      billiLimpWalks -= 1;
+      if (billiLimpWalks === 0) billi.classList.remove("is-limping");
+    }
     if (onArrival) onArrival();
   }
 
@@ -843,6 +1198,8 @@ function renderScene(resetCharacters) {
   const imageChanged = sceneImage.getAttribute("src") !== imageSource;
 
   gameStage.dataset.scene = state.scene;
+  SOUND.syncScene(state.scene);
+  syncTrashCanStroll();
   locationLabel.textContent = definition.location;
   sceneImage.alt = imageAlt;
   endingPanel.hidden = !(state.scene === "cosmos" && state.flags.ended);
@@ -878,15 +1235,21 @@ function refreshState() {
 
 function goToScene(scene, lines, onDone) {
   clearDelayedDialogue();
+  stopBraceletAnimation();
+  clearBridgeMouse();
+  clearTrashCanStroll();
+  clearDoorPryAnimation();
+  const tonyTransition = prepareTonyTransition(lines, onDone);
+  SOUND.transition(state.scene, scene);
   state.scene = scene;
   state.selectedItem = null;
   saveState();
   renderScene(true);
-  if (lines && lines.length) {
-    playDialogue(lines, onDone);
+  if (tonyTransition.lines.length) {
+    playDialogue(tonyTransition.lines, tonyTransition.onDone);
   } else {
     hideDialogue();
-    if (onDone) onDone();
+    if (tonyTransition.onDone) tonyTransition.onDone();
   }
   preloadNextScenes(scene);
 }
@@ -895,6 +1258,7 @@ function enterBridge() {
   const firstVisit = !state.flags.bridgeVisited;
   state.flags.bridgeVisited = true;
   goToScene("bridge", firstVisit ? SCRIPT.bridge.firstVisit : null);
+  if (firstVisit) runBridgeMouse();
 }
 
 function queueBrunoOffer() {
@@ -909,6 +1273,60 @@ function enterPizzeria() {
   const firstVisit = !state.flags.pizzeriaVisited;
   state.flags.pizzeriaVisited = true;
   goToScene("pizzeria", firstVisit ? SCRIPT.pizzeria.firstVisit : null, queueBrunoOffer);
+}
+
+function leavePizzeria() {
+  const firstGreeting = !state.flags.trashCanGreetingHeard;
+  state.flags.trashCanGreetingHeard = true;
+  goToScene("street", firstGreeting ? [SCRIPT.trashCanMan.exitGreeting] : null);
+}
+
+function playRestroomEntrance() {
+  walkRequest += 1;
+  const request = walkRequest;
+  const startX = 8;
+  const endX = 31;
+  const startedAt = performance.now();
+
+  positions = {
+    billi: { x: startX, y: 86 },
+    mumi: { x: 38, y: 85 },
+    tony: { x: 43, y: 86 }
+  };
+  setFacing(billi, false);
+  setFacing(mumi, true);
+  setFacing(tony, true);
+  billi.classList.add("is-walking");
+  mumi.classList.remove("is-walking");
+  tony.classList.remove("is-walking");
+  renderWalkers();
+
+  function frame(now) {
+    if (request !== walkRequest || state.scene !== "restroom") return;
+    const progress = Math.min(1, (now - startedAt) / 720);
+    positions.billi.x = startX + (endX - startX) * progress;
+    renderWalkers();
+
+    if (progress < 1) {
+      window.requestAnimationFrame(frame);
+      return;
+    }
+
+    billi.classList.remove("is-walking");
+  }
+
+  window.requestAnimationFrame(frame);
+}
+
+function enterPizzeriaRestroom() {
+  const firstVisit = !state.flags.restroomVisited;
+  state.flags.restroomVisited = true;
+  goToScene("restroom");
+
+  if (firstVisit) {
+    playRestroomEntrance();
+    playDialogue(SCRIPT.pizzeria.restroom.firstVisit);
+  }
 }
 
 function enterPiedPiper() {
@@ -961,6 +1379,61 @@ const actions = {
 
   riverStone: function () {
     playLine(SCRIPT.willowStreet.riverStone);
+  },
+
+  upperWindows: function () {
+    playDialogue(SCRIPT.willowStreet.upperWindows);
+  },
+
+  tonyWindow: function () {
+    if (state.flags.tonyFollowing) {
+      playLine(SCRIPT.tony.alreadyFollowing);
+      return;
+    }
+
+    if (!state.flags.tonyMet) {
+      playDialogue([SCRIPT.tony.windowCall], function () {
+        state.flags.tonyMet = true;
+        state.flags.tonyWindowOpen = true;
+        state.flags.tonyAtWindow = true;
+        refreshState();
+        playDialogue(SCRIPT.tony.firstMeeting, function () {
+          startTonyFollowing(false);
+        });
+      });
+      return;
+    }
+
+    state.flags.tonyWindowOpen = true;
+    state.flags.tonyAtWindow = true;
+    refreshState();
+
+    if (state.flags.tonyHelpedDoor) {
+      playLine(SCRIPT.tony.helpedAlready);
+      return;
+    }
+
+    if (state.flags.pryBarWedged && state.flags.pryBarTwoPersonAttempted) {
+      playDialogue(SCRIPT.tony.helpRecruitment, function () {
+        startTonyFollowing(true);
+      });
+      return;
+    }
+
+    playLine(SCRIPT.tony.waitingAtWindow);
+  },
+
+  trashCanMan: function () {
+    clearTrashCanStroll();
+    if (trashCanRemarkIndex === 0) {
+      trashCanRemarkIndex += 1;
+      playDialogue(SCRIPT.trashCanMan.rant, function () { scheduleTrashCanStroll(false); });
+      return;
+    }
+    const remarks = SCRIPT.trashCanMan.repeatRemarks;
+    const remark = remarks[(trashCanRemarkIndex - 1) % remarks.length];
+    trashCanRemarkIndex += 1;
+    playDialogue([remark], function () { scheduleTrashCanStroll(false); });
   },
 
   bridgePath: function () { goToScene("riverside"); },
@@ -1076,6 +1549,28 @@ const actions = {
       enterPumphouse();
       return;
     }
+
+    if (state.flags.pryBarWedged) {
+      if (
+        state.flags.pryBarTwoPersonAttempted &&
+        state.flags.tonyFollowing &&
+        state.flags.tonyHelpingDoor
+      ) {
+        playDialogue(SCRIPT.bridge.pryBarThreeSetup, crackPumpDoorWithTony);
+        return;
+      }
+
+      if (!state.flags.pryBarTwoPersonAttempted) {
+        state.flags.pryBarTwoPersonAttempted = true;
+        refreshState();
+        playDialogue(SCRIPT.bridge.pryBarTogether);
+        return;
+      }
+
+      playLine(SCRIPT.bridge.pryBarNeedThird);
+      return;
+    }
+
     playLine(SCRIPT.bridge.pumpDoorLocked);
   },
 
@@ -1149,7 +1644,30 @@ const actions = {
     playLine(SCRIPT.pieShop.noraRepeat);
   },
 
-  pizzeriaExit: function () { goToScene("street"); },
+  pizzeriaExit: leavePizzeria,
+
+  restroomDoor: enterPizzeriaRestroom,
+
+  restroomExit: function () {
+    goToScene("pizzeria");
+    queueBrunoOffer();
+  },
+
+  restroomGarland: function () {
+    playLine(SCRIPT.pizzeria.restroom.garland);
+  },
+
+  restroomMirror: function () {
+    playLine(SCRIPT.pizzeria.restroom.mirror);
+  },
+
+  restroomSink: function () {
+    playLine(SCRIPT.pizzeria.restroom.sink);
+  },
+
+  restroomToilet: function () {
+    playLine(SCRIPT.pizzeria.restroom.toilet);
+  },
 
   townPhotos: function () {
     playLine(SCRIPT.pizzeria.photographs);
@@ -1369,9 +1887,9 @@ const itemUses = {
         return;
       }
       removeItem("pryBar");
-      state.flags.pumpDoorOpen = true;
+      state.flags.pryBarWedged = true;
       refreshState();
-      playDialogue(SCRIPT.backroom.pryBarUsed, enterPumphouse);
+      playDialogue(SCRIPT.bridge.pryBarSolo);
     }
   },
   ceramicFuse: {
@@ -1440,7 +1958,8 @@ const itemUses = {
       removeItem("wrappedPizza");
       state.flags.braceletWorn = true;
       refreshState();
-      playDialogue(SCRIPT.pieShop.pizzaTrade);
+      billi.classList.remove("has-bracelet");
+      playDialogue(SCRIPT.pieShop.pizzaTrade, playBraceletAnimation);
     }
   },
   sparkPlugWire: {
@@ -1497,7 +2016,8 @@ function preloadNextScenes(scene) {
     carGraveyard: ["woodline"],
     riverside: ["street", "bridge"],
     bridge: ["riverside", "pizzeria", "pumphouse"],
-    pizzeria: ["street", "backroom", "market"],
+    pizzeria: ["street", "restroom", "backroom", "market"],
+    restroom: ["pizzeria"],
     market: ["street", "piedPiper"],
     piedPiper: ["market", "pizzeria"],
     backroom: ["pizzeria", "bridge"],
@@ -1539,6 +2059,18 @@ function preloadNextScenes(scene) {
 
 function resetToBeginning() {
   clearDelayedDialogue();
+  stopBraceletAnimation();
+  clearBridgeMouse();
+  clearTrashCanStroll();
+  clearDoorPryAnimation();
+  if (billiTripTimer !== null) {
+    window.clearTimeout(billiTripTimer);
+    billiTripTimer = null;
+  }
+  billiLimpWalks = 0;
+  walksUntilBilliTrips = 18 + Math.floor(Math.random() * 13);
+  previousTripRemark = "";
+  billi.classList.remove("is-tripping", "is-limping");
   if (itemNoticeTimer !== null) {
     window.clearTimeout(itemNoticeTimer);
     itemNoticeTimer = null;
@@ -1560,7 +2092,12 @@ function resetToBeginning() {
 
 hotspots.addEventListener("click", function (event) {
   const button = event.target.closest("[data-action]");
-  if (!button || activeDialogue) return;
+  if (
+    !button ||
+    activeDialogue ||
+    gameStage.classList.contains("is-bracelet-cutaway") ||
+    gameStage.classList.contains("is-three-person-pry")
+  ) return;
   event.stopPropagation();
   hideObjectLabel();
   const hotspot = findHotspot(button.dataset.action);
@@ -1569,7 +2106,13 @@ hotspots.addEventListener("click", function (event) {
 });
 
 gameStage.addEventListener("click", function (event) {
-  if (activeDialogue || event.target.closest("[data-action]") || state.scene === "cosmos") return;
+  if (
+    activeDialogue ||
+    gameStage.classList.contains("is-bracelet-cutaway") ||
+    gameStage.classList.contains("is-three-person-pry") ||
+    event.target.closest("[data-action]") ||
+    state.scene === "cosmos"
+  ) return;
   const rect = gameStage.getBoundingClientRect();
   const x = ((event.clientX - rect.left) / rect.width) * 100;
   const y = ((event.clientY - rect.top) / rect.height) * 100;
@@ -1582,9 +2125,12 @@ dialogue.addEventListener("click", function (event) {
 });
 
 document.addEventListener("keydown", function (event) {
-  if (event.key === "Enter" && activeDialogue && event.target === document.body) {
+  if (event.key === "Enter" && activeDialogue) {
     event.preventDefault();
+    event.stopPropagation();
+    if (event.repeat) return;
     advanceDialogue();
+    return;
   }
   if (event.key === "Escape" && state.selectedItem) {
     clearSelection();

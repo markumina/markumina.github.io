@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nothing | albaphet.org</title>
-<meta name="description" content="A small point-and-click game about Billi, Mumi, a pizza shop, and a path beneath the bridge.">
+<meta name="description" content="A small point-and-click game about Lily, Mark, Tony, a pizza shop, and a path beneath the bridge.">
 <link rel="canonical" href="https://www.albaphet.org/nothing/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="albaphet.org">
@@ -25,6 +25,7 @@
   <header class="game-title-bar">
     <h1><img src="assets/nothing-icon.svg" width="32" height="32" alt=""> Nothing</h1>
     <span class="location-label" id="location-label">Willow Street</span>
+    <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true" aria-label="Mute sound" title="Mute sound">SND</button>
     <a class="window-close" href="../?desktop=1" aria-label="Close Nothing" title="Close">&times;</a>
   </header>
 
@@ -33,10 +34,13 @@
       <img class="scene-image" id="scene-image" src="assets/scene-street.png" width="1536" height="1024" alt="A quiet neighborhood street at night">
       <div class="scene-patches" id="scene-patches" aria-hidden="true"></div>
       <div class="scene-decorations" id="scene-decorations" aria-hidden="true"></div>
+      <span class="bridge-mouse" id="bridge-mouse" aria-hidden="true" hidden></span>
+      <span class="trash-can-man" id="trash-can-man" aria-hidden="true"></span>
 
       <div class="walkers" aria-hidden="true">
+        <span class="walker walker--tony" id="tony" hidden><span class="walker-sprite"></span></span>
         <span class="walker walker--mumi" id="mumi"><span class="walker-sprite"></span></span>
-        <span class="walker walker--billi" id="billi"><span class="walker-sprite"></span></span>
+        <span class="walker walker--billi" id="billi"><span class="walker-sprite"></span><span class="bracelet-application"></span></span>
       </div>
 
       <div class="hotspots" id="hotspots"></div>
@@ -49,7 +53,7 @@
 
       <section class="dialogue" id="dialogue" aria-live="polite" aria-atomic="true" hidden>
         <p><strong id="speaker"></strong><span id="dialogue-line"></span></p>
-        <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue">continue&nbsp;&rsaquo;</button>
+        <button class="dialogue-next" id="dialogue-next" type="button" aria-label="Continue dialogue" title="Continue">&rsaquo;</button>
       </section>
 
       <div class="scene-loader" id="scene-loader" hidden aria-label="Loading scene">
@@ -81,6 +85,7 @@
 </noscript>
 
 <script src="dialogue.js"></script>
+<script src="sound.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
