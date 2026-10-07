@@ -253,7 +253,7 @@ const sceneDefinitions = {
     ]
   },
   piedPiper: {
-    image: "assets/scene-pied-piper.png",
+    image: "assets/scene-pied-piper-nora.png",
     alt: "A cozy Halloween pie shop with the lively Nora Piper, hanging bats, cookies, cider, and an amber perfume bottle",
     location: "Pie Piper",
     start: [14, 84],
