@@ -36,8 +36,10 @@
       <div class="scene-decorations" id="scene-decorations" aria-hidden="true"></div>
       <span class="bridge-mouse" id="bridge-mouse" aria-hidden="true" hidden></span>
       <span class="trash-can-man" id="trash-can-man" aria-hidden="true"></span>
+      <span class="rolling-tire" id="rolling-tire" aria-hidden="true" hidden></span>
 
       <div class="walkers" aria-hidden="true">
+        <span class="walker walker--danny" id="danny-chaser" hidden><span class="walker-sprite"></span></span>
         <span class="walker walker--tony" id="tony" hidden><span class="walker-sprite"></span></span>
         <span class="walker walker--mumi" id="mumi"><span class="walker-sprite"></span></span>
         <span class="walker walker--billi" id="billi"><span class="walker-sprite"></span><span class="bracelet-application"></span></span>
@@ -45,6 +47,11 @@
 
       <div class="hotspots" id="hotspots"></div>
       <span class="object-label" id="object-label" hidden></span>
+
+      <div class="chase-status" id="chase-status" role="status" aria-live="assertive" hidden>
+        <strong>RUN</strong>
+        <span aria-hidden="true"><i id="chase-meter"></i></span>
+      </div>
 
       <div class="item-notice" id="item-notice" role="status" aria-live="polite" aria-atomic="true" hidden>
         <strong id="item-notice-title"></strong>

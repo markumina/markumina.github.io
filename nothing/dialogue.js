@@ -78,6 +78,22 @@ window.NOTHING_DIALOGUE = {
     wrappedPizza: {
       held: { speaker: "Lily", text: "A warm slice of Bruno's pizza wrapped in foil." },
       description: { speaker: "Lily", text: "Still warm, folded into foil, with a red paper napkin tucked around it." }
+    },
+    towRope: {
+      held: { speaker: "Mark", text: "The old tow rope from the car graveyard. It is dry, heavy, and still sound." },
+      description: { speaker: "Mark", text: "A long braided tow rope with one good steel hook left on it." }
+    },
+    looseTire: {
+      held: { speaker: "Lily", text: "A loose junkyard tire. Heavy, flat, and still round enough to roll." },
+      description: { speaker: "Mark", text: "An old wheel and tire from beside the red muscle car. It is not attached to anything anymore." }
+    },
+    brakeFluid: {
+      held: { speaker: "Mark", text: "Half a container of brake fluid from Danny's garage." },
+      description: { speaker: "Lily", text: "Old brake fluid in a scuffed plastic bottle. The cap is still tight." }
+    },
+    sideCutters: {
+      held: { speaker: "Mark", text: "A small pair of red-handled side cutters from the yard behind Bellini's." },
+      description: { speaker: "Mark", text: "Old diagonal cutters. The hinge is loose, but the jaws still meet cleanly." }
     }
   },
 
@@ -137,10 +153,55 @@ window.NOTHING_DIALOGUE = {
     ]
   },
 
+  belliniYard: {
+    shed: { speaker: "Mark", text: "The shed door is swollen shut. Whatever mattered was left outside." },
+    crates: { speaker: "Lily", text: "Bellini's delivery crates. The newest date burned into one is 1986." },
+    sideCuttersTaken: { speaker: "Mark", text: "Old side cutters. Loose hinge, clean jaws. These still work." }
+  },
+
   lowerWillow: {
+    bandFirstVisit: [
+      { speaker: "Lily", text: "That's probably Jamie's band playing." },
+      { speaker: "Mark", text: "Sounds like high school band practice." },
+      { speaker: "Lily", text: "They've been working on that same song all month." }
+    ],
+    bandWindow: [
+      { speaker: "Lily", text: "Jamie's band is still working on it." },
+      { speaker: "Mark", text: "The drummer found the chorus this time." }
+    ],
     porch: { speaker: "Lily", text: "A paper pumpkin turning under the porch light. Someone still changes that bulb." },
-    shutteredShop: { speaker: "Mark", text: "The lettering is gone. The shelves are still in there." },
-    vacantLot: { speaker: "Lily", text: "Old tire tracks cut through the weeds and keep going downhill." }
+    doorWiggle: [
+      { speaker: "Mark", text: "Wiggly door. Wiggle it more?" },
+      { speaker: "Lily", text: "Whatever." }
+    ],
+    vacantLot: { speaker: "Lily", text: "Old tire tracks cut through the weeds and keep going downhill." },
+    twinsChallenge: [
+      { speaker: "Danny", text: "Hey, wussbags! Come kickstart this and you can have it." },
+      { speaker: "Lily", text: "What if we don't?" },
+      { speaker: "Danny", text: "Just get over here." },
+      { speaker: "Mark", text: "Kiss my ass, turkey." }
+    ],
+    twinsEscaped: { speaker: "Lily", text: "Wussies!" },
+    twinsCaught: [
+      { speaker: "Danny", text: "Too slow. Pizza tax." },
+      { speaker: "Lily", text: "He took the wrapped pizza." }
+    ]
+  },
+
+  dannysGarage: {
+    firstVisit: [
+      { speaker: "Mark", text: "Oh fuck, a KX250!" },
+      { speaker: "Mark", text: "This thing would rip your arms out of their sockets." },
+      { speaker: "Lily", text: "So will Danny if he sees us here." },
+      { speaker: "Mark", text: "This is Danny's house?" },
+      { speaker: "Lily", text: "Yeah, but he's like somewhere. On probation or something." },
+      { speaker: "Mark", text: "You don't go \"somewhere on probation.\"" },
+      { speaker: "Lily", text: "Whatever. Let's go. We gotta do stuff." },
+      { speaker: "Mark", text: "Like do what?" },
+      { speaker: "Lily", text: "I dunno. Let's get out of here, though." }
+    ],
+    bikeRepeat: { speaker: "Mark", text: "A 1997 KX250. That thing would be completely unreasonable." },
+    brakeFluidTaken: { speaker: "Lily", text: "Half a container of brake fluid. Cap's tight. Let's go." }
   },
 
   woodline: {
@@ -150,12 +211,35 @@ window.NOTHING_DIALOGUE = {
 
   carGraveyard: {
     sedan: { speaker: "Mark", text: "Early nineties. It looks like every school parking lot at once." },
+    tireTaken: { speaker: "Lily", text: "A loose junkyard tire. Heavy, flat, and still round enough to roll." },
+    tireImpact: { speaker: "Mark", text: "The tire hit the bumper and the hood latch let go." },
+    turboEngine: [
+      { speaker: "Lily", text: "OMG, this is a 2.2 turbo!" },
+      { speaker: "Mark", text: "It is probably rusted into one piece." },
+      { speaker: "Lily", text: "We should take it." },
+      { speaker: "Mark", text: "We cannot just take it. We have to find out who owns it and offer them, like, a hundred bucks." },
+      { speaker: "Lily", text: "A hundred bucks?" },
+      { speaker: "Mark", text: "For the whole car." },
+      { speaker: "Lily", text: "More like free. Who cares anyway? We can just drive it off-road." },
+      { speaker: "Mark", text: "Off-road where?" },
+      { speaker: "Lily", text: "Near the power lines." },
+      { speaker: "Mark", text: "It has no front wheel." },
+      { speaker: "Lily", text: "Fine. Then we start with the hundred bucks." }
+    ],
+    turboEngineRepeat: { speaker: "Lily", text: "A 2.2 turbo, assuming the engine and the rust can still be separated." },
     olderShell: { speaker: "Lily", text: "The trees have been here long enough to grow around the bumper." },
     hoodOpened: { speaker: "Mark", text: "The hinges complain, but the hood stays up." },
     wireVisible: { speaker: "Lily", text: "Most of the wiring is brittle. One red ignition lead still bends." },
     hoodEmpty: { speaker: "Mark", text: "Nothing else in the engine bay wants to come quietly." },
     missingWheel: { speaker: "Lily", text: "One wheel off, two blocks under it, and twenty years of leaves." },
-    wireTaken: { speaker: "Mark", text: "A red spark plug wire. Old, but the insulation still flexes." }
+    wireSecured: { speaker: "Mark", text: "The good ignition lead is trapped behind a rusted steel retaining strap. Pulling it will tear the insulation." },
+    wireNeedsCutters: { speaker: "Lily", text: "Hold the side cutters. I'll keep the ignition lead out of the way." },
+    wireTaken: { speaker: "Mark", text: "A red spark plug wire. Old, but the insulation still flexes." },
+    ropeTaken: [
+      { speaker: "Lily", text: "There is a tow rope under the leaves." },
+      { speaker: "Mark", text: "Dry in the middle, no cuts, one good hook. Keep it." }
+    ],
+    ropeGone: { speaker: "Lily", text: "Only a rope-shaped clean patch remains in the leaves." }
   },
 
   riverside: {
@@ -170,6 +254,22 @@ window.NOTHING_DIALOGUE = {
     ],
     river: { speaker: "Lily", text: "The current and the reflected lights are moving in opposite directions." },
     emptyDrain: { speaker: "Mark", text: "Nothing else in the drain but rainwater." },
+    needRope: [
+      { speaker: "Lily", text: "The grate moves." },
+      { speaker: "Mark", text: "There is more than rainwater under it." }
+    ],
+    ropeReady: { speaker: "Lily", text: "Hold the tow rope and use it on the drain." },
+    ropeRigged: [
+      { speaker: "Lily", text: "Loop the hook through the grate." },
+      { speaker: "Mark", text: "Pull. There. Now tie the other end around the rail." },
+      { speaker: "Lily", text: "I will go first." }
+    ],
+    trashCanClue: [
+      { speaker: "Lily", text: "Mark. That is his trash can." },
+      { speaker: "Mark", text: "The man from beside Bellini's." },
+      { speaker: "Lily", text: "He left it beside the way into the bridge." }
+    ],
+    emptyTrashCan: { speaker: "Lily", text: "Empty. He left it here like a coat by the door." },
     tokenFound: { speaker: "Mark", text: "A brass token was caught in the grate. It has a triangular notch." },
     tagGone: { speaker: "Lily", text: "Only a clean patch of dust remains by the step." },
     tagFound: { speaker: "Lily", text: "An old Bellini's delivery tag. The destination says pump station." },
@@ -189,7 +289,7 @@ window.NOTHING_DIALOGUE = {
     pryBarNeedThird: { speaker: "Mark", text: "The two of us already tried. We need Tony." },
     pryBarThreeSetup: [
       { speaker: "Mark", text: "All three of us on the end." },
-      { speaker: "Tony", text: "This is safe, right?" },
+      { speaker: "Tony", text: "Move over. I get the end." },
       { speaker: "Lily", text: "Press down on three." },
       { speaker: "Mark", text: "One. Two. Three." }
     ],
@@ -198,6 +298,64 @@ window.NOTHING_DIALOGUE = {
       { speaker: "Mark", text: "The door's open." },
       { speaker: "Tony", text: "I'm going back before my fries get cold again." }
     ]
+  },
+
+  drainPassage: {
+    firstVisit: [
+      { speaker: "Lily", text: "That is not just a drain. It is a hallway." },
+      { speaker: "Mark", text: "We are inside one of the bridge piers." },
+      { speaker: "Lily", text: "And that ladder keeps going up." },
+      { speaker: "Mark", text: "Of course it does." }
+    ],
+    rope: { speaker: "Mark", text: "The knot is holding. The bridge path is straight up." },
+    water: { speaker: "Lily", text: "Rainwater is running through a channel cut into the floor." },
+    arch: { speaker: "Mark", text: "That little arch passes through the center of the stone pier." },
+    ladder: { speaker: "Lily", text: "Rusty, but the bolts are still buried deep in the masonry." }
+  },
+
+  inspectionGallery: {
+    firstVisit: [
+      { speaker: "Lily", text: "Mark. That light is shimmering." },
+      { speaker: "Mark", text: "It is electric. Someone is up here." },
+      { speaker: "Lily", text: "Or was." },
+      { speaker: "Mark", text: "We do not know who lives in there." },
+      { speaker: "Lily", text: "We look from the doorway. We do not touch anything." },
+      { speaker: "Mark", text: "You already decided we are going farther." },
+      { speaker: "Lily", text: "Yes." }
+    ],
+    ladder: { speaker: "Mark", text: "The ladder drops back into the pier and down to the drain." },
+    conduit: { speaker: "Mark", text: "Old inspection conduit. One newer cable has been clipped alongside it." },
+    bolts: { speaker: "Lily", text: "Those bolts pass through the bridge ribs. Each one is wider than my hand." },
+    glow: { speaker: "Lily", text: "The light moves like a flame, but there is no smoke." }
+  },
+
+  bridgeNook: {
+    firstVisit: [
+      { speaker: "Lily", text: "Oh. Someone really does live here." },
+      { speaker: "Mark", text: "They are not here right now." },
+      { speaker: "Lily", text: "The lamp is on. They cannot be far." },
+      { speaker: "Mark", text: "Then we look without touching anything." }
+    ],
+    lamp: { speaker: "Mark", text: "An electric lamp made to look like kerosene. The battery cable runs under the table." },
+    sandwich: { speaker: "Lily", text: "A Subway sub, still wrapped. This may be the newest thing in here." },
+    table: { speaker: "Mark", text: "Two boards, three crates, and not a wobble. Whoever built it knew what they were doing." },
+    mirror: { speaker: "Lily", text: "A little mirror hung from a masonry nail. The towel beside it is still damp." },
+    water: { speaker: "Mark", text: "Two jugs of water. Full, clear, and recently carried up here." },
+    sign: [
+      { speaker: "Lily", text: "Avast ye scurvies." },
+      { speaker: "Mark", text: "Specific." }
+    ],
+    bedroll: { speaker: "Lily", text: "Blankets folded tight, a canvas bag, and clean clothes. This is not abandoned." },
+    shelf: { speaker: "Mark", text: "A radio, an inspection manual, three paperbacks, and a tin of tea." },
+    violinReveal: [
+      { speaker: "Lily", text: "That's him." },
+      { speaker: "Mark", text: "The man from the trash can." },
+      { speaker: "Lily", text: "Shh. Let him finish." },
+      { speaker: "Lily", text: "Everybody walks past him every day." },
+      { speaker: "Mark", text: "They don't know." },
+      { speaker: "Lily", text: "Neither did we." }
+    ],
+    violinist: { speaker: "Lily", text: "Let's not interrupt him." }
   },
 
   market: {
@@ -277,6 +435,7 @@ window.NOTHING_DIALOGUE = {
         { speaker: "Bruno", text: "or what" }
       ],
       wrappingPizza: { speaker: "Bruno", text: "u wanna wrapped up? ima gonna wrap... just a minute." },
+      replacementPizza: { speaker: "Bruno", text: "Whadda happened to the first one? Ah, nevva mind. Ima wrappa one more." },
       pizzaReady: { speaker: "Bruno", text: "Here ya go." },
       pizzaGone: { speaker: "Bruno", text: "I already wrappa that one for ya." },
       backroomRefusal: { speaker: "Bruno", text: "whatt? you wanna go back inna there? nah, come ahhn." },
@@ -284,8 +443,11 @@ window.NOTHING_DIALOGUE = {
       tagConversation: [
         { speaker: "Bruno", text: "Where'da u find this?" },
         { speaker: "Lily", text: "At the pump-building door." },
+        { speaker: "Bruno", text: "The pump buildin'? He never tell me that." },
         { speaker: "Bruno", text: "My fatha deliver to the night crew. Then one winta, the orders stop." },
-        { speaker: "Bruno", text: "His bridge stuff is inna back room. Go look." }
+        { speaker: "Bruno", text: "But he keepa goin out at night. He never say where, he never say why." },
+        { speaker: "Bruno", text: "This is his writin'. His bridge stuff is inna back room." },
+        { speaker: "Bruno", text: "I never make sense of it. Maybe you do. Go look." }
       ],
       ciderConversation: [
         { speaker: "Bruno", text: "Nora's cider. Cinnamon, clove, and a formal warning froma the dentist." },
@@ -299,20 +461,31 @@ window.NOTHING_DIALOGUE = {
     firstVisit: [
       { speaker: "Bruno", text: "My fatha, he save everything excepta useful shelf space." },
       { speaker: "Mark", text: "These are plans for the bridge." },
-      { speaker: "Bruno", text: "And the olda pump room unda it. Take whateva helps." }
+      { speaker: "Bruno", text: "He call somethin' in these papers the Labyrinth." },
+      { speaker: "Bruno", text: "I always think he mean the streets. Now I dunno." },
+      { speaker: "Bruno", text: "He never find what he look for. Then there was no time lefta ask." },
+      { speaker: "Bruno", text: "Take whateva helps." }
     ],
     pryBarGone: { speaker: "Mark", text: "A clean line in the dust marks where the pry bar was." },
     pryBarTaken: { speaker: "Mark", text: "A short iron pry bar. Not elegant, but neither is that boarded door." },
-    plans: { speaker: "Lily", text: "The bridge plans show a pump room. The sheet ends where the floor should be." },
-    fuseGone: { speaker: "Lily", text: "The workbench is mostly tomato tins now." },
+    plans: [
+      { speaker: "Lily", text: "There are handwritten pages tucked behind the bridge plan." },
+      { speaker: "Mark", text: "October seventeenth. The bridge plans lie. The route is present, but will not show itself." },
+      { speaker: "Mark", text: "The amber survey lens responds to the markings. If I can bring it into the Labyrinth, it may reveal the path." },
+      { speaker: "Lily", text: "He capitalized Labyrinth." },
+      { speaker: "Mark", text: "And never wrote down where its entrance was." },
+      { speaker: "Lily", text: "Maybe he never found it." }
+    ],
+    fuseGone: { speaker: "Lily", text: "Only a small clean mark remains on the workbench." },
     fuseTaken: { speaker: "Lily", text: "A ceramic fuse. It is the same size as the empty socket on the wall." },
     fuseInstalled: { speaker: "Mark", text: "The cabinet circuit is live again." },
     fuseMissing: { speaker: "Lily", text: "The right-hand socket is empty." },
-    cabinetEmpty: { speaker: "Lily", text: "Only ordinary camera parts remain." },
+    cabinetEmpty: { speaker: "Lily", text: "The lens shelf is empty. Everything else is ordinary camera hardware." },
     cabinetUnpowered: { speaker: "Mark", text: "The electric catch is dead. The wall box is missing a fuse." },
     lensFound: [
-      { speaker: "Lily", text: "An amber survey lens." },
-      { speaker: "Bruno", text: "My fatha say it show things ordinary glassa miss." }
+      { speaker: "Lily", text: "The amber survey lens from the manuscript." },
+      { speaker: "Mark", text: "He thought it could reveal a route through the Labyrinth." },
+      { speaker: "Bruno", text: "He keepa that locked up all these years. I never know why." }
     ],
     pryBarUsed: [
       { speaker: "Mark", text: "The plank is moving." },

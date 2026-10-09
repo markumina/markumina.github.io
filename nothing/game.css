@@ -200,6 +200,24 @@ a:focus-visible {
   -webkit-user-drag: none;
 }
 
+.scene-patch--pry-restoration,
+.scene-patch--fuse-restoration,
+.scene-patch--lens-restoration {
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 58%, transparent 96%);
+  mask-image: radial-gradient(ellipse at center, #000 58%, transparent 96%);
+}
+
+.scene-patch--pry-restoration img,
+.scene-patch--fuse-restoration img,
+.scene-patch--lens-restoration img {
+  filter: brightness(0.94) saturate(0.94);
+}
+
+.scene-patch--pry-restoration {
+  -webkit-mask-image: radial-gradient(ellipse at 54% 53%, #000 68%, transparent 98%);
+  mask-image: radial-gradient(ellipse at 54% 53%, #000 68%, transparent 98%);
+}
+
 .scene-decorations {
   position: absolute;
   z-index: 2;
@@ -228,7 +246,7 @@ a:focus-visible {
 .scene-decoration--bridge-banner {
   filter: drop-shadow(1px 2px 0 rgba(7, 12, 24, 0.72));
   opacity: 0.96;
-  transform: rotate(-11deg);
+  transform: rotate(-14deg);
   transform-origin: 7% 7%;
 }
 
@@ -241,8 +259,106 @@ a:focus-visible {
   object-fit: fill;
 }
 
+.scene-decoration--tony-window {
+  transform-origin: 68% 50%;
+  filter: drop-shadow(1px 1px 0 rgba(5, 8, 14, 0.72));
+  animation: tony-window-swing 460ms steps(4, end) both;
+}
+
 .scene-decoration--tony-window-head {
-  animation: tony-window-peek 420ms steps(4, end) both;
+  animation: tony-window-peek 360ms 260ms steps(4, end) both;
+}
+
+.scene-decoration--band-window {
+  image-rendering: pixelated;
+  mix-blend-mode: screen;
+  opacity: 0.68;
+  filter: drop-shadow(0 0 3px rgba(106, 67, 143, 0.54));
+  animation: band-window-color 7.2s steps(3, end) infinite;
+}
+
+.scene-decoration--tv-window {
+  object-fit: fill;
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  filter: drop-shadow(0 0 2px rgba(91, 155, 190, 0.36));
+  animation: television-window-flicker 8.7s steps(1, end) infinite;
+}
+
+.scene-decoration--tv-b {
+  animation-delay: -3.1s;
+  animation-duration: 10.4s;
+}
+
+.scene-decoration--tv-c {
+  animation-delay: -6.4s;
+  animation-duration: 12.1s;
+}
+
+.scene-decoration--shuttered-door {
+  object-fit: fill;
+  transform-origin: 44% 48%;
+}
+
+.scene-decoration--smoking-twin {
+  object-fit: fill;
+  clip-path: inset(48% 68% 21% 22%);
+  opacity: 0;
+  animation: smoking-twin-drag 5.4s steps(1, end) infinite;
+}
+
+.game-stage.is-shop-door-wiggling .scene-decoration--shuttered-door {
+  animation: shuttered-door-wiggle 680ms steps(7, end) both;
+}
+
+.game-stage.is-shop-door-opening .scene-decoration--shuttered-door {
+  animation: shuttered-door-open 920ms steps(9, end) both;
+}
+
+.scene-decoration--tow-rope {
+  opacity: 0.9;
+  filter: drop-shadow(1px 2px 0 rgba(7, 10, 15, 0.78));
+}
+
+.scene-decoration--side-cutters {
+  object-fit: contain;
+  filter: drop-shadow(1px 2px 1px rgba(8, 9, 12, 0.76));
+  transform: rotate(-7deg);
+}
+
+.scene-decoration--open-drain {
+  object-fit: fill;
+  filter: drop-shadow(1px 2px 1px rgba(4, 7, 12, 0.82));
+}
+
+.scene-decoration--drain-rope {
+  object-fit: fill;
+  filter: drop-shadow(1px 2px 0 rgba(7, 10, 15, 0.78));
+}
+
+.scene-decoration--inspection-shimmer {
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 5px rgba(245, 177, 74, 0.68));
+  animation: inspection-shimmer 2.8s steps(4, end) infinite;
+}
+
+.scene-decoration--nook-sign {
+  object-fit: fill;
+  image-rendering: auto;
+  filter: drop-shadow(1px 1px 0 rgba(19, 13, 10, 0.7));
+  transform: rotate(-1deg);
+}
+
+.scene-decoration--empty-trash-can {
+  filter: drop-shadow(2px 2px 0 rgba(4, 7, 10, 0.72));
+  transform: rotate(-3deg);
+  transform-origin: 50% 100%;
+}
+
+.scene-decoration--nook-violinist {
+  filter: drop-shadow(2px 2px 0 rgba(8, 7, 8, 0.74));
+  transform-origin: 50% 100%;
+  animation: nook-violinist-sway 1.8s steps(2, end) infinite;
 }
 
 .scene-decoration--pry-bar {
@@ -295,12 +411,38 @@ a:focus-visible {
   will-change: transform;
 }
 
-.game-stage[data-scene="street"] .trash-can-man {
+.game-stage[data-scene="belliniSide"] .trash-can-man {
   display: block;
+  top: 82%;
+  left: 76%;
+}
+
+.trash-can-man[hidden] {
+  display: none !important;
 }
 
 .trash-can-man.is-strolling {
   animation: trash-can-stroll 2600ms steps(1, end) both;
+}
+
+.rolling-tire {
+  position: absolute;
+  z-index: 4;
+  top: 71%;
+  left: 70%;
+  display: block;
+  width: 5.5%;
+  aspect-ratio: 1;
+  background: url("assets/rolling-tire.svg") center / contain no-repeat;
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.72));
+  image-rendering: pixelated;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  will-change: top, left, transform, opacity;
+}
+
+.rolling-tire.is-rolling {
+  animation: junkyard-tire-roll 1350ms steps(12, end) both;
 }
 
 .walkers {
@@ -330,6 +472,13 @@ a:focus-visible {
 
 .walker--tony {
   z-index: 1;
+}
+
+.walker--danny {
+  z-index: 3;
+  width: 9.2%;
+  aspect-ratio: 1 / 2;
+  filter: drop-shadow(2px 3px 1px rgba(3, 7, 10, 0.5));
 }
 
 .walker-sprite {
@@ -383,6 +532,11 @@ a:focus-visible {
   background-image: url("assets/tony-walk.svg");
 }
 
+.walker--danny .walker-sprite {
+  background-image: url("assets/danny-bully-walk.png");
+  background-size: 400% 100%;
+}
+
 .walker.is-left .walker-sprite {
   --facing: -1;
   transform: scaleX(-1);
@@ -392,12 +546,21 @@ a:focus-visible {
   animation: walk-frame 240ms steps(1, end) infinite;
 }
 
+.game-stage.is-twins-chase .walker.is-walking .walker-sprite {
+  animation-duration: 130ms;
+}
+
+.game-stage.is-twins-chase .walker--danny.is-walking .walker-sprite {
+  animation: danny-bully-walk 820ms steps(1, end) infinite;
+}
+
 .walker--billi.is-tripping {
   z-index: 5;
 }
 
 .walker--billi.is-tripping .walker-sprite {
   animation: billi-trip 1150ms linear both;
+  transform-origin: 50% 50%;
 }
 
 .walker--billi.is-limping.is-walking .walker-sprite {
@@ -422,6 +585,22 @@ a:focus-visible {
 
 .game-stage.is-three-person-pry .hotspots {
   pointer-events: none;
+}
+
+.game-stage.is-fence-hopping .hotspots {
+  pointer-events: none;
+}
+
+.game-stage.is-fence-hopping .walker--billi {
+  animation: fence-hop 900ms steps(9, end) both;
+}
+
+.game-stage.is-fence-hopping .walker--mumi {
+  animation: fence-hop 900ms 120ms steps(9, end) both;
+}
+
+.game-stage.is-fence-hopping .walker--tony {
+  animation: fence-hop 900ms 210ms steps(9, end) both;
 }
 
 .game-stage.is-three-person-pry .walker {
@@ -528,6 +707,16 @@ a:focus-visible {
   opacity: 1;
 }
 
+.game-stage.is-twins-chase .hotspot:not([data-action="lowerWillowBack"]):not([data-action="lowerWillowForward"]) {
+  pointer-events: none;
+}
+
+.game-stage.is-twins-chase .hotspot[data-arrow]::before {
+  filter: drop-shadow(0 0 3px #fff1a4) drop-shadow(1px 1px 0 #000000);
+  opacity: 1;
+  animation-duration: 520ms;
+}
+
 .hotspot:focus-visible::after {
   position: absolute;
   top: 50%;
@@ -555,6 +744,53 @@ a:focus-visible {
   text-shadow: 1px 1px 0 #000000, -1px 1px 0 #000000, 1px -1px 0 #000000;
   transform: translateX(-50%);
   white-space: nowrap;
+}
+
+.chase-status {
+  position: absolute;
+  z-index: 8;
+  top: 4%;
+  left: 50%;
+  display: grid;
+  width: min(280px, 62%);
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px;
+  border: 2px solid #090c0d;
+  background: #c0c0c0;
+  box-shadow:
+    inset 1px 1px 0 #ffffff,
+    inset -1px -1px 0 #4a4a4a,
+    4px 4px 0 rgba(0, 0, 0, 0.62);
+  color: #171717;
+  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.chase-status strong {
+  color: #8d1d18;
+  font-size: 16px;
+}
+
+.chase-status > span {
+  display: block;
+  height: 12px;
+  padding: 2px;
+  border: 2px solid;
+  border-color: #404040 #ffffff #ffffff #404040;
+  background: #222729;
+}
+
+.chase-status i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #e8b642;
+  box-shadow: inset -2px 0 0 #a72c22;
 }
 
 .scene-loader {
@@ -1005,6 +1241,53 @@ a:focus-visible {
   }
 }
 
+@keyframes smoking-twin-drag {
+  0%,
+  61%,
+  82%,
+  100% {
+    opacity: 0;
+  }
+
+  62%,
+  81% {
+    opacity: 1;
+  }
+}
+
+@keyframes television-window-flicker {
+  0%,
+  7%,
+  13%,
+  31%,
+  38%,
+  58%,
+  73%,
+  100% {
+    opacity: 0.12;
+    filter: hue-rotate(0deg) brightness(0.86) drop-shadow(0 0 1px rgba(91, 155, 190, 0.24));
+  }
+
+  8%,
+  12%,
+  32%,
+  37% {
+    opacity: 0.46;
+    filter: hue-rotate(24deg) brightness(1.24) drop-shadow(0 0 3px rgba(113, 175, 199, 0.5));
+  }
+
+  59%,
+  66% {
+    opacity: 0.28;
+    filter: hue-rotate(-18deg) brightness(1.05) drop-shadow(0 0 2px rgba(127, 123, 186, 0.4));
+  }
+
+  67%,
+  72% {
+    opacity: 0.06;
+  }
+}
+
 @keyframes walk-frame {
   0%,
   49% {
@@ -1014,6 +1297,28 @@ a:focus-visible {
   50%,
   100% {
     background-position: right top;
+  }
+}
+
+@keyframes danny-bully-walk {
+  0%,
+  24.99% {
+    background-position: 0 top;
+  }
+
+  25%,
+  49.99% {
+    background-position: 33.333% top;
+  }
+
+  50%,
+  74.99% {
+    background-position: 66.667% top;
+  }
+
+  75%,
+  100% {
+    background-position: 100% top;
   }
 }
 
@@ -1102,6 +1407,84 @@ a:focus-visible {
   }
 }
 
+@keyframes junkyard-tire-roll {
+  0% {
+    top: 71%;
+    left: 70%;
+    opacity: 1;
+    transform: translate(-50%, -100%) rotate(0deg);
+  }
+
+  68% {
+    top: 63%;
+    left: 36%;
+    opacity: 1;
+    transform: translate(-50%, -100%) rotate(-540deg);
+  }
+
+  84% {
+    top: 59%;
+    left: 30%;
+    opacity: 1;
+    transform: translate(-50%, -100%) rotate(-650deg);
+  }
+
+  92% {
+    top: 60.5%;
+    left: 29%;
+    opacity: 1;
+    transform: translate(-50%, -100%) rotate(-685deg) scale(0.94, 1.06);
+  }
+
+  100% {
+    top: 62%;
+    left: 29.5%;
+    opacity: 0;
+    transform: translate(-50%, -100%) rotate(-700deg) scale(1.08, 0.9);
+  }
+}
+
+@keyframes shuttered-door-wiggle {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  18%,
+  56% {
+    transform: translate(-2px, 0) rotate(-0.7deg);
+  }
+
+  36%,
+  76% {
+    transform: translate(2px, 1px) rotate(0.65deg);
+  }
+}
+
+@keyframes shuttered-door-open {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  16%,
+  48% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+
+  31%,
+  64% {
+    transform: translate(3px, 1px) rotate(0.9deg);
+  }
+
+  80% {
+    transform: translate(-2px, 0) rotate(-0.6deg) skewY(0deg);
+  }
+
+  100% {
+    transform: translate(-5px, 1px) rotate(-1.2deg) skewY(1deg);
+  }
+}
+
 @keyframes bracelet-camera {
   0% {
     transform: scale(1);
@@ -1151,30 +1534,30 @@ a:focus-visible {
 @keyframes billi-trip {
   0% {
     background-position: left top;
-    transform: scaleX(var(--facing)) translate(0, 0) rotate(0deg);
+    transform: scaleX(var(--facing)) rotate(0deg);
   }
 
   18% {
-    transform: scaleX(var(--facing)) translate(2%, -7%) rotate(220deg);
+    transform: scaleX(var(--facing)) rotate(220deg);
   }
 
   40% {
     background-position: right top;
-    transform: scaleX(var(--facing)) translate(-3%, -5%) rotate(480deg);
+    transform: scaleX(var(--facing)) rotate(480deg);
   }
 
   64% {
-    transform: scaleX(var(--facing)) translate(3%, 3%) rotate(720deg);
+    transform: scaleX(var(--facing)) rotate(720deg);
   }
 
   78%,
   86% {
     background-position: left top;
-    transform: scaleX(var(--facing)) translate(1%, 9%) rotate(900deg) scaleY(0.62);
+    transform: scaleX(var(--facing)) rotate(900deg) scaleY(0.62);
   }
 
   100% {
-    transform: scaleX(var(--facing)) translate(0, 0) rotate(1080deg) scaleY(1);
+    transform: scaleX(var(--facing)) rotate(1080deg) scaleY(1);
   }
 }
 
@@ -1201,12 +1584,71 @@ a:focus-visible {
 @keyframes tony-window-peek {
   0% {
     opacity: 0;
-    transform: translateY(24%);
+    transform: translateY(18%);
   }
 
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes tony-window-swing {
+  0% {
+    opacity: 0.42;
+    transform: scaleX(0.32) skewY(-5deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleX(1) skewY(0);
+  }
+}
+
+@keyframes band-window-color {
+  0%,
+  100% {
+    opacity: 0.62;
+    filter: hue-rotate(0deg) drop-shadow(0 0 3px rgba(106, 67, 143, 0.5));
+  }
+
+  33% {
+    opacity: 0.72;
+    filter: hue-rotate(22deg) drop-shadow(0 0 4px rgba(57, 123, 145, 0.56));
+  }
+
+  66% {
+    opacity: 0.67;
+    filter: hue-rotate(-16deg) drop-shadow(0 0 3px rgba(170, 91, 62, 0.5));
+  }
+}
+
+@keyframes inspection-shimmer {
+  0%,
+  100% {
+    opacity: 0.44;
+    transform: translate(0, 0);
+  }
+
+  35% {
+    opacity: 0.9;
+    transform: translate(-1px, 1px);
+  }
+
+  70% {
+    opacity: 0.62;
+    transform: translate(1px, -1px);
+  }
+}
+
+@keyframes nook-violinist-sway {
+  0%,
+  100% {
+    transform: rotate(-1deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(1deg) translateY(-1px);
   }
 }
 
@@ -1252,6 +1694,31 @@ a:focus-visible {
 
   50% {
     transform: translate(-50%, -50%) rotate(var(--arrow-rotation)) translateX(3px);
+  }
+}
+
+@keyframes fence-hop {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -100%) translateY(0) rotate(0);
+  }
+
+  22% {
+    transform: translate(-50%, -128%) translateY(-2px) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate(-50%, -205%) translateY(-3px) rotate(3deg);
+  }
+
+  76% {
+    opacity: 0.82;
+    transform: translate(-50%, -150%) translateY(1px) rotate(-2deg) scale(0.94);
+  }
+
+  100% {
+    opacity: 0.08;
+    transform: translate(-50%, -105%) translateY(3px) rotate(0) scale(0.88);
   }
 }
 
@@ -1441,7 +1908,17 @@ a:focus-visible {
   .walker--billi.is-receiving-bracelet .bracelet-application,
   .bridge-mouse.is-running,
   .trash-can-man.is-strolling,
+  .rolling-tire.is-rolling,
+  .scene-decoration--tony-window,
   .scene-decoration--tony-window-head,
+  .scene-decoration--band-window,
+  .scene-decoration--tv-window,
+  .scene-decoration--inspection-shimmer,
+  .scene-decoration--nook-violinist,
+  .scene-decoration--smoking-twin,
+  .game-stage.is-fence-hopping .walker,
+  .game-stage.is-shop-door-wiggling .scene-decoration--shuttered-door,
+  .game-stage.is-shop-door-opening .scene-decoration--shuttered-door,
   .game-stage.is-three-person-pry .scene-decoration--pry-bar,
   .game-stage.is-three-person-pry .walker {
     animation: none;
